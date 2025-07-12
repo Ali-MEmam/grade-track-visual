@@ -46,47 +46,44 @@ export function AppSidebar() {
   const collapsed = state === "collapsed"
 
   const isActive = (path: string) => currentPath === path
-  const isExpanded = navigationItems.some((item) => isActive(item.url)) || systemItems.some((item) => isActive(item.url))
-  
-  const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive 
-      ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm" 
-      : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-200"
 
   return (
-    <Sidebar
-      className={`${collapsed ? "w-16" : "w-64"} border-r border-sidebar-border transition-all duration-300 lg:relative fixed lg:translate-x-0 z-40`}
-      collapsible="icon"
-    >
-      <SidebarContent className="bg-sidebar">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
+      <SidebarContent>
         {/* Logo/Brand Section */}
-        <div className="p-3 sm:p-4 border-b border-sidebar-border">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+        <div className="p-4 border-b border-sidebar-border">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shrink-0">
+              <GraduationCap className="w-5 h-5 text-white" />
             </div>
-            {!collapsed && (
-              <div>
-                <h2 className="text-base sm:text-lg font-bold text-sidebar-foreground">EduDash</h2>
-                <p className="text-xs text-sidebar-foreground/60 hidden sm:block">School Management</p>
-              </div>
-            )}
+            <div className="group-data-[collapsible=icon]:hidden">
+              <h2 className="text-lg font-bold text-sidebar-foreground">EduDash</h2>
+              <p className="text-xs text-sidebar-foreground/60">School Management</p>
+            </div>
           </div>
         </div>
 
         {/* Main Navigation */}
-        <SidebarGroup className="px-2">
-          <SidebarGroupLabel className="text-sidebar-foreground/80 text-xs font-medium px-3 py-2">
-            {!collapsed && "Main Menu"}
+        <SidebarGroup>
+          <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+            Main Menu
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
+            <SidebarMenu>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="h-9 sm:h-10">
-                    <NavLink to={item.url} end className={getNavCls}>
-                      <item.icon className="w-4 h-4 shrink-0" />
-                      {!collapsed && <span className="truncate text-sm">{item.title}</span>}
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to={item.url} 
+                      end
+                      className={({ isActive }) => 
+                        isActive 
+                          ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium" 
+                          : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                      }
+                    >
+                      <item.icon className="w-4 h-4" />
+                      <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -96,18 +93,26 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* System Section */}
-        <SidebarGroup className="px-2 mt-auto">
-          <SidebarGroupLabel className="text-sidebar-foreground/80 text-xs font-medium px-3 py-2">
-            {!collapsed && "System"}
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+            System
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
+            <SidebarMenu>
               {systemItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="h-9 sm:h-10">
-                    <NavLink to={item.url} end className={getNavCls}>
-                      <item.icon className="w-4 h-4 shrink-0" />
-                      {!collapsed && <span className="truncate text-sm">{item.title}</span>}
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to={item.url} 
+                      end
+                      className={({ isActive }) => 
+                        isActive 
+                          ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium" 
+                          : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                      }
+                    >
+                      <item.icon className="w-4 h-4" />
+                      <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -117,8 +122,8 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Collapse Toggle */}
-        <div className="p-3 sm:p-4 border-t border-sidebar-border">
-          <SidebarTrigger className="w-full justify-center text-xs sm:text-sm" />
+        <div className="p-4 border-t border-sidebar-border">
+          <SidebarTrigger className="w-full" />
         </div>
       </SidebarContent>
     </Sidebar>
