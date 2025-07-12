@@ -55,20 +55,20 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      className={`${collapsed ? "w-16" : "w-64"} border-r border-sidebar-border transition-all duration-300`}
+      className={`${collapsed ? "w-16" : "w-64"} border-r border-sidebar-border transition-all duration-300 lg:relative fixed lg:translate-x-0 z-40`}
       collapsible="icon"
     >
       <SidebarContent className="bg-sidebar">
         {/* Logo/Brand Section */}
-        <div className="p-4 border-b border-sidebar-border">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-white" />
+        <div className="p-3 sm:p-4 border-b border-sidebar-border">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             {!collapsed && (
               <div>
-                <h2 className="text-lg font-bold text-sidebar-foreground">EduDash</h2>
-                <p className="text-xs text-sidebar-foreground/60">School Management</p>
+                <h2 className="text-base sm:text-lg font-bold text-sidebar-foreground">EduDash</h2>
+                <p className="text-xs text-sidebar-foreground/60 hidden sm:block">School Management</p>
               </div>
             )}
           </div>
@@ -83,10 +83,10 @@ export function AppSidebar() {
             <SidebarMenu className="space-y-1">
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="h-10">
+                  <SidebarMenuButton asChild className="h-9 sm:h-10">
                     <NavLink to={item.url} end className={getNavCls}>
                       <item.icon className="w-4 h-4 shrink-0" />
-                      {!collapsed && <span className="truncate">{item.title}</span>}
+                      {!collapsed && <span className="truncate text-sm">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -104,10 +104,10 @@ export function AppSidebar() {
             <SidebarMenu className="space-y-1">
               {systemItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="h-10">
+                  <SidebarMenuButton asChild className="h-9 sm:h-10">
                     <NavLink to={item.url} end className={getNavCls}>
                       <item.icon className="w-4 h-4 shrink-0" />
-                      {!collapsed && <span className="truncate">{item.title}</span>}
+                      {!collapsed && <span className="truncate text-sm">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -117,8 +117,8 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Collapse Toggle */}
-        <div className="p-4 border-t border-sidebar-border">
-          <SidebarTrigger className="w-full justify-center" />
+        <div className="p-3 sm:p-4 border-t border-sidebar-border">
+          <SidebarTrigger className="w-full justify-center text-xs sm:text-sm" />
         </div>
       </SidebarContent>
     </Sidebar>

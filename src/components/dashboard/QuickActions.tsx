@@ -61,18 +61,18 @@ export function QuickActions() {
         <CardTitle className="text-lg">Quick Actions</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
           {actions.map((action, index) => (
             <Button
               key={action.title}
               variant={action.variant}
-              className="h-auto p-4 justify-start gap-3 animate-scale-in"
+              className="h-auto p-3 sm:p-4 justify-start gap-2 sm:gap-3 animate-scale-in text-left"
               onClick={action.action}
             >
-              <action.icon className="w-5 h-5 shrink-0" />
-              <div className="text-left">
-                <div className="font-medium text-sm">{action.title}</div>
-                <div className="text-xs opacity-70">{action.description}</div>
+              <action.icon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <div className="text-left min-w-0">
+                <div className="font-medium text-xs sm:text-sm truncate">{action.title}</div>
+                <div className="text-xs opacity-70 truncate hidden sm:block">{action.description}</div>
               </div>
             </Button>
           ))}

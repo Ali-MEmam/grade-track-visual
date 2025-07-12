@@ -5,13 +5,13 @@ import { AttendanceChart } from "@/components/dashboard/AttendanceChart"
 
 const Index = () => {
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-6 lg:space-y-8 animate-fade-in">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">
+      <div className="space-y-2">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
           Welcome back, Principal Smith
         </h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="text-sm sm:text-base text-muted-foreground">
           Here's what's happening at your school today
         </p>
       </div>
@@ -20,14 +20,14 @@ const Index = () => {
       <StatsOverview />
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
         {/* Left Column - Charts and Analytics */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="xl:col-span-2 space-y-6 lg:space-y-8">
           <AttendanceChart />
         </div>
 
         {/* Right Column - Activity and Actions */}
-        <div className="space-y-8">
+        <div className="space-y-6 lg:space-y-8">
           <QuickActions />
           <RecentActivity />
         </div>

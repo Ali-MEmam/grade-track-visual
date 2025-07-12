@@ -86,32 +86,32 @@ export function RecentActivity() {
           Recent Activity
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4">
         {activities.map((activity, index) => (
           <div 
             key={activity.id} 
-            className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors duration-200 animate-slide-in"
+            className="flex items-start gap-3 sm:gap-4 p-2 sm:p-3 rounded-lg hover:bg-muted/50 transition-colors duration-200 animate-slide-in"
           >
             <div className={`p-2 rounded-lg ${getActivityColor(activity.type)}`}>
               {getActivityIcon(activity.type)}
             </div>
             
-            <div className="flex-1 space-y-1">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-medium text-sm">{activity.title}</p>
-                  <p className="text-sm text-muted-foreground">{activity.description}</p>
+            <div className="flex-1 space-y-1 min-w-0">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-sm truncate">{activity.title}</p>
+                  <p className="text-sm text-muted-foreground truncate">{activity.description}</p>
                 </div>
-                <Badge variant={getBadgeVariant(activity.type)} className="text-xs">
+                <Badge variant={getBadgeVariant(activity.type)} className="text-xs shrink-0">
                   {activity.type}
                 </Badge>
               </div>
               
               <div className="flex items-center gap-2 mt-2">
-                <Avatar className="w-6 h-6">
+                <Avatar className="w-5 h-5 sm:w-6 sm:h-6">
                   <AvatarFallback className="text-xs">{activity.user.initials}</AvatarFallback>
                 </Avatar>
-                <span className="text-xs text-muted-foreground">{activity.time}</span>
+                <span className="text-xs text-muted-foreground truncate">{activity.time}</span>
               </div>
             </div>
           </div>

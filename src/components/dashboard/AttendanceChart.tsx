@@ -16,18 +16,20 @@ export function AttendanceChart() {
         <CardTitle className="text-lg">Weekly Attendance</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-64 w-full">
+        <div className="h-48 sm:h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={attendanceData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <BarChart data={attendanceData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis 
                 dataKey="day" 
                 stroke="hsl(var(--muted-foreground))"
-                fontSize={12}
+                fontSize={10}
+                tick={{ fontSize: 10 }}
               />
               <YAxis 
                 stroke="hsl(var(--muted-foreground))"
-                fontSize={12}
+                fontSize={10}
+                tick={{ fontSize: 10 }}
               />
               <Tooltip 
                 contentStyle={{
@@ -53,14 +55,14 @@ export function AttendanceChart() {
           </ResponsiveContainer>
         </div>
         
-        <div className="flex justify-center gap-6 mt-4">
+        <div className="flex justify-center gap-4 sm:gap-6 mt-4">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-success rounded-full"></div>
-            <span className="text-sm text-muted-foreground">Present</span>
+            <span className="text-xs sm:text-sm text-muted-foreground">Present</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-destructive rounded-full"></div>
-            <span className="text-sm text-muted-foreground">Absent</span>
+            <span className="text-xs sm:text-sm text-muted-foreground">Absent</span>
           </div>
         </div>
       </CardContent>

@@ -52,22 +52,22 @@ export function StatCard({
       variants[variant],
       className
     )}>
-      <CardContent className="p-6">
+      <CardContent className="p-4 sm:p-6">
         <div className="flex items-center justify-between">
-          <div className="space-y-2 flex-1">
+          <div className="space-y-2 flex-1 min-w-0">
             <p className={cn(
-              "text-sm font-medium",
+              "text-xs sm:text-sm font-medium truncate",
               variant === "default" ? "text-muted-foreground" : "text-current opacity-80"
             )}>
               {title}
             </p>
             <div className="space-y-1">
-              <p className="text-2xl font-bold">
+              <p className="text-xl sm:text-2xl font-bold truncate">
                 {value}
               </p>
               {change && (
                 <p className={cn(
-                  "text-xs font-medium",
+                  "text-xs font-medium truncate",
                   variant === "default" ? getTrendColor(change.trend) : "text-current opacity-70"
                 )}>
                   {change.value}
@@ -76,10 +76,10 @@ export function StatCard({
             </div>
           </div>
           <div className={cn(
-            "w-12 h-12 rounded-xl flex items-center justify-center",
+            "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0",
             iconVariants[variant]
           )}>
-            <Icon className="w-6 h-6" />
+            <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
         </div>
       </CardContent>

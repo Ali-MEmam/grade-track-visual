@@ -19,7 +19,7 @@ const App = () => (
         <SidebarProvider>
           <div className="min-h-screen flex w-full bg-gradient-subtle">
             <AppSidebar />
-            <main className="flex-1 p-8 overflow-auto">
+            <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
               <Routes>
                 <Route path="/" element={<Index />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
