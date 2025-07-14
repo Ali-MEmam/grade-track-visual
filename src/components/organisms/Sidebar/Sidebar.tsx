@@ -9,7 +9,6 @@ import {
   FileText,
   Bell
 } from "lucide-react"
-import { NavLink, useLocation } from "react-router-dom"
 
 import {
   Sidebar,
@@ -18,11 +17,9 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarTrigger,
-  useSidebar,
 } from "@/components/ui/sidebar"
+import { NavigationItem } from "@/components/molecules/NavigationItem/NavigationItem"
 
 const navigationItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -40,13 +37,6 @@ const systemItems = [
 ]
 
 export function AppSidebar() {
-  const { state } = useSidebar()
-  const location = useLocation()
-  const currentPath = location.pathname
-  const collapsed = state === "collapsed"
-
-  const isActive = (path: string) => currentPath === path
-
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarContent>
@@ -71,22 +61,12 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      end
-                      className={({ isActive }) => 
-                        isActive 
-                          ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium" 
-                          : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
-                      }
-                    >
-                      <item.icon className="w-4 h-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <NavigationItem 
+                  key={item.title}
+                  title={item.title}
+                  url={item.url}
+                  icon={item.icon}
+                />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -100,22 +80,12 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {systemItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      end
-                      className={({ isActive }) => 
-                        isActive 
-                          ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium" 
-                          : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
-                      }
-                    >
-                      <item.icon className="w-4 h-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <NavigationItem 
+                  key={item.title}
+                  title={item.title}
+                  url={item.url}
+                  icon={item.icon}
+                />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
