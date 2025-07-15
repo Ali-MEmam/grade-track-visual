@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { Students } from "@/components/pages/Students/Students";
 import { Teachers } from "@/components/pages/Teachers/Teachers";
+import { Calendar } from "@/components/pages/Calendar/Calendar";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/students" element={<Students />} />
             <Route path="/teachers" element={<Teachers />} />
+            <Route path="/calendar" element={<Calendar />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
