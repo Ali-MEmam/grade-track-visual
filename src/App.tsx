@@ -15,6 +15,8 @@ import { Analysis } from "@/components/pages/Analysis/Analysis";
 import { Classes } from "@/components/pages/Classes/Classes";
 import { Syllabus } from "@/components/pages/Syllabus/Syllabus";
 import { Reports } from "@/components/pages/Reports/Reports";
+import { Login } from "@/components/pages/Auth/Login";
+import { Register } from "@/components/pages/Auth/Register";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,8 @@ const App = () => (
             <Route path="/classes" element={<Classes />} />
             <Route path="/syllabus" element={<Syllabus />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
