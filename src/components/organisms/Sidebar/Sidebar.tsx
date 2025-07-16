@@ -1,14 +1,15 @@
-import { 
-  BookOpen, 
-  Users, 
-  Calendar, 
-  BarChart3, 
-  Settings, 
+import {
+  BookOpen,
+  Users,
+  Calendar,
+  BarChart3,
+  Settings,
   Home,
   GraduationCap,
   FileText,
-  Bell
-} from "lucide-react"
+  Bell,
+  ClipboardList,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -18,23 +19,24 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { NavigationItem } from "@/components/molecules/NavigationItem/NavigationItem"
+} from "@/components/ui/sidebar";
+import { NavigationItem } from "@/components/molecules/NavigationItem/NavigationItem";
 
 const navigationItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Students", url: "/students", icon: Users },
   { title: "Teachers", url: "/teachers", icon: GraduationCap },
   { title: "Classes", url: "/classes", icon: BookOpen },
+  { title: "Syllabus", url: "/syllabus", icon: ClipboardList },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Reports", url: "/reports", icon: FileText },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
-]
+];
 
 const systemItems = [
   { title: "Notifications", url: "/notifications", icon: Bell },
   { title: "Settings", url: "/settings", icon: Settings },
-]
+];
 
 export function AppSidebar() {
   return (
@@ -47,8 +49,12 @@ export function AppSidebar() {
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <div className="group-data-[collapsible=icon]:hidden">
-              <h2 className="text-lg font-bold text-sidebar-foreground">EduDash</h2>
-              <p className="text-xs text-sidebar-foreground/60">School Management</p>
+              <h2 className="text-lg font-bold text-sidebar-foreground">
+                EduDash
+              </h2>
+              <p className="text-xs text-sidebar-foreground/60">
+                School Management
+              </p>
             </div>
           </div>
         </div>
@@ -61,7 +67,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
-                <NavigationItem 
+                <NavigationItem
                   key={item.title}
                   title={item.title}
                   url={item.url}
@@ -80,7 +86,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {systemItems.map((item) => (
-                <NavigationItem 
+                <NavigationItem
                   key={item.title}
                   title={item.title}
                   url={item.url}
@@ -97,5 +103,5 @@ export function AppSidebar() {
         </div>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
