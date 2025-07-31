@@ -1,6 +1,7 @@
 import { AnalyticsDashboard } from "./Components/AnalyticsDashboard";
 
 export const Analysis = () => {
+  console.log("Hello");
   return (
     <div className="space-y-6 lg:space-y-8 animate-fade-in">
       {/* Header */}
