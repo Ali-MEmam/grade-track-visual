@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/atoms/Card/Card";
 import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
+import { useAuth } from '@/contexts/AuthContext';
 
 export const Register = () => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -16,17 +17,41 @@ export const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: ''
+    role: '' as 'student' | 'teacher' | 'admin' | ''
   });
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match!");
       return;
     }
-    console.log('Register attempt:', formData);
-    // Add registration logic here
+    
+    if (!formData.role) {
+      alert("Please select a role!");
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role as 'student' | 'teacher' | 'admin'
+      });
+      navigate('/');
+    } catch (error) {
+      // Error is handled by the register function
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +64,7 @@ export const Register = () => {
   const handleRoleChange = (value: string) => {
     setFormData(prev => ({
       ...prev,
-      role: value
+      role: value as 'student' | 'teacher' | 'admin' | ''
     }));
   };
 
@@ -159,8 +184,8 @@ export const Register = () => {
               </div>
             </div>
 
-            <Button type="submit" className="w-full" size="lg">
-              Create Account
+            <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+              {isSubmitting ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
 

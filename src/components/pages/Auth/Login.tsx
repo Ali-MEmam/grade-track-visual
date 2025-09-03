@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/atoms/Card/Card";
 import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, LogIn } from "lucide-react";
+import { useAuth } from '@/contexts/AuthContext';
 
 export const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -12,11 +13,26 @@ export const Login = () => {
     email: '',
     password: ''
   });
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
-    // Add login logic here
+    setIsSubmitting(true);
+    
+    try {
+      await login(formData.email, formData.password);
+      // Redirect to intended page or dashboard
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
+    } catch (error) {
+      // Error is handled by the login function
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,8 +103,8 @@ export const Login = () => {
               </Link>
             </div>
 
-            <Button type="submit" className="w-full" size="lg">
-              Sign In
+            <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+              {isSubmitting ? "Signing In..." : "Sign In"}
             </Button>
           </form>
 
