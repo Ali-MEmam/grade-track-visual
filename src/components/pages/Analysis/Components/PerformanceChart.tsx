@@ -42,11 +42,11 @@ const mockData: PerformanceDataPoint[] = [
 ];
 
 const COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
+  "hsl(var(--primary))",
+  "hsl(var(--secondary))", 
+  "hsl(var(--tertiary))",
+  "hsl(var(--success))",
+  "hsl(var(--warning))",
   "hsl(var(--destructive))",
 ];
 
@@ -117,14 +117,15 @@ export const PerformanceChart = ({
                   ]}
                   labelFormatter={(label) => `Grade: ${label}`}
                   contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
+                    backgroundColor: "hsl(var(--background))",
                     border: "1px solid hsl(var(--border))",
                     borderRadius: "8px",
+                    boxShadow: "0 4px 6px -1px hsl(var(--border) / 0.1)",
                   }}
                 />
                 <Bar
                   dataKey="count"
-                  fill="hsl(var(--chart-1))"
+                  fill="hsl(var(--primary))"
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
@@ -157,9 +158,10 @@ export const PerformanceChart = ({
                   <Tooltip
                     formatter={(value: number) => [value, "Students"]}
                     contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
+                      backgroundColor: "hsl(var(--background))",
                       border: "1px solid hsl(var(--border))",
                       borderRadius: "8px",
+                      boxShadow: "0 4px 6px -1px hsl(var(--border) / 0.1)",
                     }}
                   />
                 </PieChart>
