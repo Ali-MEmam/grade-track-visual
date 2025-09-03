@@ -76,16 +76,16 @@ export const AttendanceChart = ({
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Attendance Trends
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-primary rounded-full"></div>
-                <span className="text-muted-foreground">Actual</span>
-              </div>
-              <div className="flex items-center gap-4 text-sm">
-                <div className="w-3 h-3 bg-secondary rounded-full"></div>
-                <span className="text-muted-foreground">Target</span>
-              </div>
+          <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+              <span className="text-muted-foreground">Actual</span>
             </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span className="text-muted-foreground">Target</span>
+            </div>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -112,27 +112,26 @@ export const AttendanceChart = ({
               ]}
               labelFormatter={(label) => `Date: ${label}`}
               contentStyle={{
-                backgroundColor: "hsl(var(--background))",
+                backgroundColor: "hsl(var(--card))",
                 border: "1px solid hsl(var(--border))",
                 borderRadius: "8px",
-                boxShadow: "0 4px 6px -1px hsl(var(--border) / 0.1)",
               }}
             />
             <Line
               type="monotone"
               dataKey="attendance"
-              stroke="hsl(var(--primary))"
+              stroke="hsl(var(--chart-1))"
               strokeWidth={3}
-              dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, fill: "hsl(var(--primary))" }}
+              dot={{ fill: "hsl(var(--chart-1))", strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6, fill: "hsl(var(--chart-1))" }}
             />
             <Line
               type="monotone"
               dataKey="target"
-              stroke="hsl(var(--secondary))"
+              stroke="hsl(var(--chart-2))"
               strokeWidth={2}
               strokeDasharray="5 5"
-              dot={{ fill: "hsl(var(--secondary))", strokeWidth: 2, r: 3 }}
+              dot={{ fill: "hsl(var(--chart-2))", strokeWidth: 2, r: 3 }}
             />
           </LineChart>
         </ResponsiveContainer>

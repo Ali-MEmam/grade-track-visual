@@ -67,13 +67,13 @@ export const ReportCard = ({
   const getStatusColor = (status: ReportData["status"]) => {
     switch (status) {
       case "completed":
-        return "bg-success/10 text-success border-success/20";
+        return "bg-green-100 text-green-800 border-green-200";
       case "generating":
-        return "bg-primary/10 text-primary border-primary/20";
+        return "bg-blue-100 text-blue-800 border-blue-200";
       case "scheduled":
-        return "bg-warning/10 text-warning border-warning/20";
+        return "bg-orange-100 text-orange-800 border-orange-200";
       case "failed":
-        return "bg-destructive/10 text-destructive border-destructive/20";
+        return "bg-red-100 text-red-800 border-red-200";
     }
   };
 
@@ -91,14 +91,12 @@ export const ReportCard = ({
   };
 
   return (
-    <Card className={`bg-gradient-card border shadow-card hover:shadow-hover transition-all duration-200 ${className}`}>
+    <Card className={`hover:shadow-md transition-shadow ${className}`}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg border border-primary/20">
-              <div className="text-primary">
-                {getTypeIcon(report.type)}
-              </div>
+            <div className="p-2 bg-blue-50 rounded-lg">
+              {getTypeIcon(report.type)}
             </div>
             <div>
               <CardTitle className="text-base font-semibold mb-1">
@@ -127,17 +125,17 @@ export const ReportCard = ({
 
         {/* Summary Statistics */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="text-center p-3 bg-muted/50 rounded-lg border border-border">
+          <div className="text-center p-3 bg-gray-50 rounded-lg">
             <p className="text-xs text-muted-foreground mb-1">Total Records</p>
-            <p className="text-lg font-semibold text-foreground">
+            <p className="text-lg font-semibold">
               {report.summary.totalRecords}
             </p>
           </div>
-          <div className="text-center p-3 bg-muted/50 rounded-lg border border-border">
+          <div className="text-center p-3 bg-gray-50 rounded-lg">
             <p className="text-xs text-muted-foreground mb-1">
               {report.summary.keyMetric}
             </p>
-            <p className="text-lg font-semibold text-foreground">
+            <p className="text-lg font-semibold">
               {report.summary.keyMetricValue}
             </p>
           </div>
