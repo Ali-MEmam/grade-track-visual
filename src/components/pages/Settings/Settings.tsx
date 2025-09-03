@@ -1,38 +1,41 @@
 import { useState } from "react";
 import { SettingsForm, SettingsData } from "./Components/SettingsForm";
-
-// Mock settings data
-const mockSettings: SettingsData = {
-  profile: {
-    name: "Principal Smith",
-    email: "principal.smith@school.edu",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=PrincipalSmith",
-  },
-  notifications: {
-    email: {
-      enabled: true,
-      newEnrollments: true,
-      attendanceAlerts: true,
-      systemUpdates: false,
-      reports: true,
-    },
-    sms: {
-      enabled: false,
-      emergencyAlerts: true,
-      attendanceAlerts: false,
-      importantAnnouncements: false,
-    },
-    inApp: {
-      enabled: true,
-      allNotifications: true,
-      mentions: true,
-      reminders: true,
-    },
-  },
-  theme: "system",
-};
+import { useTheme } from "@/hooks/useTheme";
 
 export const Settings = () => {
+  const { theme, setTheme } = useTheme();
+  
+  // Mock settings data with dynamic theme
+  const mockSettings: SettingsData = {
+    profile: {
+      name: "Principal Smith",
+      email: "principal.smith@school.edu",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=PrincipalSmith",
+    },
+    notifications: {
+      email: {
+        enabled: true,
+        newEnrollments: true,
+        attendanceAlerts: true,
+        systemUpdates: false,
+        reports: true,
+      },
+      sms: {
+        enabled: false,
+        emergencyAlerts: true,
+        attendanceAlerts: false,
+        importantAnnouncements: false,
+      },
+      inApp: {
+        enabled: true,
+        allNotifications: true,
+        mentions: true,
+        reminders: true,
+      },
+    },
+    theme: theme,
+  };
+  
   const [settings, setSettings] = useState<SettingsData>(mockSettings);
 
   const handleSave = (updates: Partial<SettingsData>) => {
@@ -40,6 +43,11 @@ export const Settings = () => {
       ...prev,
       ...updates,
     }));
+    
+    // Apply theme change if theme was updated
+    if (updates.theme) {
+      setTheme(updates.theme);
+    }
   };
 
   return (

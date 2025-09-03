@@ -33,7 +33,7 @@ const BottomNavItem = ({
         {({ isActive }) => (
           <>
             <div
-              className={`relative -top-3 w-14 h-14 rounded-full bg-gradient-primary shadow-lg flex items-center justify-center transition-all duration-200 ${
+              className={`relative -top-3 w-14 h-14 rounded-full bg-primary dark:bg-gradient-primary shadow-lg flex items-center justify-center transition-all duration-200 ${
                 isActive ? "scale-110 shadow-xl" : "hover:scale-105"
               }`}
             >

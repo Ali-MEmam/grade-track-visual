@@ -91,7 +91,7 @@ export const ReportCard = ({
   };
 
   return (
-    <Card className={`bg-gradient-card border shadow-card hover:shadow-hover transition-all duration-200 ${className}`}>
+    <Card className={`bg-card dark:bg-gradient-card border shadow-card hover:shadow-hover transition-all duration-200 ${className}`}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
