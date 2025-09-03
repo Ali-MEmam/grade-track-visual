@@ -321,41 +321,41 @@ export const Reports = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-blue-50 p-4 rounded-lg">
+        <div className="bg-card p-4 rounded-lg border shadow-card">
           <div className="flex items-center gap-3">
-            <BarChart3 className="w-8 h-8 text-blue-600" />
+            <BarChart3 className="w-8 h-8 text-primary" />
             <div>
               <p className="text-sm text-muted-foreground">Total Reports</p>
-              <p className="text-2xl font-bold">{reports.length}</p>
+              <p className="text-2xl font-bold text-foreground">{reports.length}</p>
             </div>
           </div>
         </div>
-        <div className="bg-green-50 p-4 rounded-lg">
+        <div className="bg-card p-4 rounded-lg border shadow-card">
           <div className="flex items-center gap-3">
-            <BarChart3 className="w-8 h-8 text-green-600" />
+            <BarChart3 className="w-8 h-8 text-success" />
             <div>
               <p className="text-sm text-muted-foreground">Completed</p>
-              <p className="text-2xl font-bold">{completedReports.length}</p>
+              <p className="text-2xl font-bold text-foreground">{completedReports.length}</p>
             </div>
           </div>
         </div>
-        <div className="bg-orange-50 p-4 rounded-lg">
+        <div className="bg-card p-4 rounded-lg border shadow-card">
           <div className="flex items-center gap-3">
-            <BarChart3 className="w-8 h-8 text-orange-600" />
+            <BarChart3 className="w-8 h-8 text-secondary" />
             <div>
               <p className="text-sm text-muted-foreground">In Progress</p>
-              <p className="text-2xl font-bold">
+              <p className="text-2xl font-bold text-foreground">
                 {reports.filter((r) => r.status === "generating").length}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-purple-50 p-4 rounded-lg">
+        <div className="bg-card p-4 rounded-lg border shadow-card">
           <div className="flex items-center gap-3">
-            <BarChart3 className="w-8 h-8 text-purple-600" />
+            <BarChart3 className="w-8 h-8 text-tertiary" />
             <div>
               <p className="text-sm text-muted-foreground">This Month</p>
-              <p className="text-2xl font-bold">
+              <p className="text-2xl font-bold text-foreground">
                 {
                   reports.filter(
                     (r) =>

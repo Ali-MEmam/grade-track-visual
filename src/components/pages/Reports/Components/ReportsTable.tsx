@@ -138,13 +138,13 @@ export const ReportsTable = ({
   const getStatusColor = (status: ReportData["status"]) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-800 border-green-200";
+        return "bg-success/10 text-success border-success/20";
       case "generating":
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "bg-primary/10 text-primary border-primary/20";
       case "scheduled":
-        return "bg-orange-100 text-orange-800 border-orange-200";
+        return "bg-warning/10 text-warning border-warning/20";
       case "failed":
-        return "bg-red-100 text-red-800 border-red-200";
+        return "bg-destructive/10 text-destructive border-destructive/20";
     }
   };
 
@@ -304,7 +304,7 @@ export const ReportsTable = ({
                     <TableRow
                       key={report.id}
                       className={`cursor-pointer hover:bg-muted/50 ${
-                        selectedReports.includes(report.id) ? "bg-blue-50" : ""
+                        selectedReports.includes(report.id) ? "bg-accent" : ""
                       }`}
                       onClick={() => handleSelectReport(report.id)}
                     >

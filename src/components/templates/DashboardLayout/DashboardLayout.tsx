@@ -5,6 +5,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from '@/components/atoms/Button/Button';
 import { LogOut, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { Logo } from '@/components/atoms/Logo/Logo';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -24,11 +25,14 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         {/* Mobile Header */}
         <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
           <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center space-x-2">
-              <User className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm font-medium">
-                {user?.firstName} {user?.lastName}
-              </span>
+            <div className="flex items-center space-x-3">
+              <Logo size="sm" />
+              <div className="flex items-center space-x-2">
+                <User className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium">
+                  {user?.firstName} {user?.lastName}
+                </span>
+              </div>
             </div>
             <Button variant="outline" size="sm" onClick={handleLogout}>
               <LogOut className="w-4 h-4" />
@@ -50,6 +54,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
             <div className="flex items-center justify-between px-6 py-4">
               <div className="flex items-center space-x-4">
+                <Logo size="md" />
                 <div className="flex items-center space-x-2">
                   <User className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm font-medium">
