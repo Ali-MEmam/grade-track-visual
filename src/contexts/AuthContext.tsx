@@ -1,12 +1,26 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { authService } from "@/components/pages/Auth/services/auth.service";
+import { unifiedAuthService } from "@/features/auth/services/unified-auth.service";
 import { tokenManager } from "@/lib/api/token-manager";
-import {
-  User,
-  AuthContextType,
-  RegisterRequest,
-} from "@/components/pages/Auth/types/auth.types";
+import type {
+  AuthType,
+  SchoolUser,
+  SuperAdminUser,
+} from "@/features/auth/types/auth.types";
+
+// Define context types
+interface AuthContextType {
+  user: SchoolUser | SuperAdminUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  authType: AuthType | null;
+  login: (
+    email: string,
+    password: string,
+    schoolCode?: string
+  ) => Promise<void>;
+  logout: () => Promise<void>;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -21,7 +35,7 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SchoolUser | SuperAdminUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
@@ -35,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           if (tokenManager.isTokenExpired()) {
             // Try to refresh the token
             try {
-              await authService.refreshToken();
+              await unifiedAuthService.refreshToken();
             } catch (refreshError) {
               // Refresh failed, clear tokens
               tokenManager.clearTokens();
@@ -46,11 +60,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
           // Try to get current user from API
           try {
-            const currentUser = await authService.getCurrentUser();
+            const currentUser = await unifiedAuthService.getCurrentUser();
             setUser(currentUser);
           } catch (error) {
             // API call failed, try to get user from token
-            const userFromToken = authService.getUserFromToken();
+            // Try to get user from token as fallback
+            const userFromToken = tokenManager.getTokenPayload() as any;
             if (userFromToken) {
               setUser(userFromToken);
             } else {
@@ -70,11 +85,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (email: string, password: string, schoolCode?: string): Promise<void> => {
     setIsLoading(true);
+    
     try {
-      // Call the auth service to login
-      const response = await authService.login({ email, password });
+      // Determine auth type based on schoolCode
+      const authType: AuthType = schoolCode ? 'school' : 'superadmin';
+      
+      // Create credentials based on auth type
+      const credentials = schoolCode 
+        ? { email, password, schoolCode }
+        : { email, password };
+      
+      // Call the unified auth service to login
+      const response = await unifiedAuthService.login(authType, credentials);
+      
       // Set the user in state
       setUser(response.user);
 
@@ -94,34 +119,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const register = async (userData: RegisterRequest): Promise<void> => {
-    setIsLoading(true);
-    try {
-      // Call the auth service to register
-      const response = await authService.register(userData);
-
-      // Set the user in state
-      setUser(response.user);
-
-      toast({
-        title: "Account created!",
-        description: "Welcome to Grade Track Visual.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Registration failed",
-        description: error.message || "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const logout = async () => {
     try {
-      await authService.logout();
+      await unifiedAuthService.logout();
       setUser(null);
       toast({
         title: "Logged out",
@@ -131,32 +132,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // Even if logout fails, clear local state
       setUser(null);
       tokenManager.clearTokens();
+      localStorage.removeItem("authType");
+      localStorage.removeItem("schoolCode");
       console.error("Logout error:", error);
     }
   };
 
-  const refreshToken = async (): Promise<void> => {
-    try {
-      await authService.refreshToken();
-      // Optionally refresh user data after token refresh
-      const currentUser = await authService.getCurrentUser();
-      setUser(currentUser);
-    } catch (error) {
-      // Token refresh failed, clear auth state
-      setUser(null);
-      tokenManager.clearTokens();
-      throw error;
-    }
-  };
+
+  const authType = unifiedAuthService.getCurrentAuthType();
 
   const value: AuthContextType = {
     user,
     isLoading,
     isAuthenticated: !!user,
+    authType,
     login,
-    register,
     logout,
-    refreshToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

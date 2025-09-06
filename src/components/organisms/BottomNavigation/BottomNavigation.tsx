@@ -1,14 +1,33 @@
 import { NavLink } from "react-router-dom";
 import { LucideIcon } from "lucide-react";
-import { Home, Users, Calendar, BarChart3, Settings } from "lucide-react";
+import { Home, Users, Calendar, BarChart3, Settings, Building, FileText } from "lucide-react";
 
-const mainNavigationItems = [
-  { title: "Dashboard", url: "/", icon: Home },
-  { title: "Students", url: "/students", icon: Users },
-  { title: "Calendar", url: "/calendar", icon: Calendar },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
-  { title: "Settings", url: "/settings", icon: Settings },
+// Get auth type to determine navigation items
+const authType = localStorage.getItem("authType");
+const isSchool = authType === "school";
+const isSuperAdmin = authType === "superadmin";
+
+// School navigation items for mobile
+const schoolMobileItems = [
+  { title: "Dashboard", url: "/school/dashboard", icon: Home },
+  { title: "Students", url: "/school/students", icon: Users },
+  { title: "Calendar", url: "/school/calendar", icon: Calendar },
+  { title: "Analytics", url: "/school/analysis", icon: BarChart3 },
+  { title: "Settings", url: "/school/settings", icon: Settings },
 ];
+
+// SuperAdmin navigation items for mobile
+const superAdminMobileItems = [
+  { title: "Dashboard", url: "/admin/dashboard", icon: Home },
+  { title: "Schools", url: "/admin/schools", icon: Building },
+  { title: "Reports", url: "/admin/reports", icon: FileText },
+  { title: "Settings", url: "/admin/settings", icon: Settings },
+];
+
+// Use appropriate navigation based on auth type
+const mainNavigationItems = isSuperAdmin 
+  ? superAdminMobileItems 
+  : schoolMobileItems;
 
 interface BottomNavItemProps {
   title: string;

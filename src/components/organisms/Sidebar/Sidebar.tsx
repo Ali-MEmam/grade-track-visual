@@ -9,6 +9,7 @@ import {
   FileText,
   Bell,
   ClipboardList,
+  Building,
 } from "lucide-react";
 import Logo from "@/assets/logo.jpeg";
 import {
@@ -22,20 +23,37 @@ import {
 } from "@/components/ui/sidebar";
 import { NavigationItem } from "@/components/molecules/NavigationItem/NavigationItem";
 
-const navigationItems = [
-  { title: "Dashboard", url: "/", icon: Home },
-  { title: "Students", url: "/students", icon: Users },
-  { title: "Teachers", url: "/teachers", icon: GraduationCap },
-  { title: "Classes", url: "/classes", icon: BookOpen },
-  { title: "Syllabus", url: "/syllabus", icon: ClipboardList },
-  { title: "Calendar", url: "/calendar", icon: Calendar },
-  { title: "Reports", url: "/reports", icon: FileText },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
+// Get auth type to determine navigation items
+const authType = localStorage.getItem("authType");
+const isSchool = authType === "school";
+const isSuperAdmin = authType === "superadmin";
+
+// School navigation items
+const schoolNavigationItems = [
+  { title: "Dashboard", url: "/school/dashboard", icon: Home },
+  { title: "Students", url: "/school/students", icon: Users },
+  { title: "Teachers", url: "/school/teachers", icon: GraduationCap },
+  { title: "Classes", url: "/school/classes", icon: BookOpen },
+  { title: "Syllabus", url: "/school/syllabus", icon: ClipboardList },
+  { title: "Calendar", url: "/school/calendar", icon: Calendar },
+  { title: "Analytics", url: "/school/analysis", icon: BarChart3 },
 ];
 
+// SuperAdmin navigation items
+const superAdminNavigationItems = [
+  { title: "Dashboard", url: "/admin/dashboard", icon: Home },
+  { title: "Schools", url: "/admin/schools", icon: Building },
+  { title: "Reports", url: "/admin/reports", icon: FileText },
+];
+
+// Use appropriate navigation based on auth type
+const navigationItems = isSuperAdmin 
+  ? superAdminNavigationItems 
+  : schoolNavigationItems;
+
 const systemItems = [
-  { title: "Notifications", url: "/notifications", icon: Bell },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Notifications", url: isSchool ? "/school/notifications" : "/admin/notifications", icon: Bell },
+  { title: "Settings", url: isSchool ? "/school/settings" : "/admin/settings", icon: Settings },
 ];
 
 export function AppSidebar() {
