@@ -1,57 +1,67 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useToast } from '@/hooks/use-toast';
-
-interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: 'student' | 'teacher' | 'admin';
-}
-
-interface AuthContextType {
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (userData: RegisterData) => Promise<void>;
-  logout: () => void;
-}
-
-interface RegisterData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role: 'student' | 'teacher' | 'admin';
-}
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { authService } from "@/components/pages/Auth/services/auth.service";
+import { tokenManager } from "@/lib/api/token-manager";
+import {
+  User,
+  AuthContextType,
+  RegisterRequest,
+} from "@/components/pages/Auth/types/auth.types";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Simulate checking for existing session on mount
+  // Check for existing session on mount
   useEffect(() => {
-    const checkAuth = () => {
+    const checkAuth = async () => {
       try {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
+        // Check if we have tokens
+        if (tokenManager.hasTokens()) {
+          // Check if token is expired
+          if (tokenManager.isTokenExpired()) {
+            // Try to refresh the token
+            try {
+              await authService.refreshToken();
+            } catch (refreshError) {
+              // Refresh failed, clear tokens
+              tokenManager.clearTokens();
+              setIsLoading(false);
+              return;
+            }
+          }
+
+          // Try to get current user from API
+          try {
+            const currentUser = await authService.getCurrentUser();
+            setUser(currentUser);
+          } catch (error) {
+            // API call failed, try to get user from token
+            const userFromToken = authService.getUserFromToken();
+            if (userFromToken) {
+              setUser(userFromToken);
+            } else {
+              // Can't get user info, clear tokens
+              tokenManager.clearTokens();
+            }
+          }
         }
       } catch (error) {
-        console.error('Error checking auth:', error);
-        localStorage.removeItem('user');
+        console.error("Error checking auth:", error);
+        tokenManager.clearTokens();
       } finally {
         setIsLoading(false);
       }
@@ -63,29 +73,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string): Promise<void> => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock user data - in real app, this would come from API
-      const mockUser: User = {
-        id: '1',
-        email,
-        firstName: 'John',
-        lastName: 'Doe',
-        role: 'admin'
-      };
+      // Call the auth service to login
+      const response = await authService.login({ email, password });
+      // Set the user in state
+      setUser(response.user);
 
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      
       toast({
         title: "Welcome back!",
-        description: "You have successfully logged in.",
+        description: `Logged in as ${response.user.email}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Login failed",
-        description: "Invalid email or password.",
+        description: error.message || "Invalid email or password.",
         variant: "destructive",
       });
       throw error;
@@ -94,32 +94,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const register = async (userData: RegisterData): Promise<void> => {
+  const register = async (userData: RegisterRequest): Promise<void> => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock user creation - in real app, this would come from API
-      const newUser: User = {
-        id: Date.now().toString(),
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        role: userData.role
-      };
+      // Call the auth service to register
+      const response = await authService.register(userData);
 
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      
+      // Set the user in state
+      setUser(response.user);
+
       toast({
         title: "Account created!",
-        description: "Welcome to our platform.",
+        description: "Welcome to Grade Track Visual.",
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Registration failed",
-        description: "Something went wrong. Please try again.",
+        description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
       });
       throw error;
@@ -128,13 +119,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
-    });
+  const logout = async () => {
+    try {
+      await authService.logout();
+      setUser(null);
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+    } catch (error) {
+      // Even if logout fails, clear local state
+      setUser(null);
+      tokenManager.clearTokens();
+      console.error("Logout error:", error);
+    }
+  };
+
+  const refreshToken = async (): Promise<void> => {
+    try {
+      await authService.refreshToken();
+      // Optionally refresh user data after token refresh
+      const currentUser = await authService.getCurrentUser();
+      setUser(currentUser);
+    } catch (error) {
+      // Token refresh failed, clear auth state
+      setUser(null);
+      tokenManager.clearTokens();
+      throw error;
+    }
   };
 
   const value: AuthContextType = {
@@ -144,11 +156,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     register,
     logout,
+    refreshToken,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
