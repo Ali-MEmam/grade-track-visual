@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, LogIn } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useLogin } from "@/components/pages/Auth/apis/useLogin";
 
 export const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -19,32 +19,16 @@ export const Login = () => {
     email: "",
     password: "",
   });
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const { login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const loginMutation = useLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login form submitted"); // Debug log
 
-    setIsSubmitting(true);
-
-    try {
-      await login(formData.email, formData.password);
-      // Clear form only on successful login
-      // setFormData({ email: "", password: "" });
-      // Redirect to intended page or dashboard
-      // const from = location.state?.from?.pathname || "/";
-      // navigate(from, { replace: true });
-    } catch (error) {
-      console.error("Login error:", error);
-      // Clear only password field on error, keep email
-      // setFormData((prev) => ({ ...prev, password: "" }));
-    } finally {
-      setIsSubmitting(false);
-    }
+    loginMutation.mutate({
+      identifier: formData.email,
+      password: formData.password,
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,9 +105,9 @@ export const Login = () => {
               type="submit"
               className="w-full"
               size="lg"
-              disabled={isSubmitting}
+              disabled={loginMutation.isPending}
             >
-              {isSubmitting ? "Signing In..." : "Sign In"}
+              {loginMutation.isPending ? "Signing In..." : "Sign In"}
             </Button>
           </form>
 

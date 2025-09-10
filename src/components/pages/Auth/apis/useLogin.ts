@@ -1,36 +1,39 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '@/components/pages/Auth/services/auth.service';
-import { LoginRequest, LoginResponse } from '@/components/pages/Auth/types/auth.types';
+import { LoginResponse } from '@/components/pages/Auth/types/auth.types';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
-/**
- * React Query hook for user login
- */
+interface LoginCredentials {
+  identifier: string;
+  password: string;
+}
+
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const { setAuthUser } = useAuth();
 
-  return useMutation<LoginResponse, Error, LoginRequest>({
-    mutationFn: async (credentials: LoginRequest) => {
-      return await authService.login(credentials);
+  return useMutation<LoginResponse, Error, LoginCredentials>({
+    mutationFn: async ({ identifier, password }) => {
+      return await authService.login({ identifier, password });
     },
     onSuccess: (data) => {
-      // Cache the user data
+      setAuthUser(data.user);
       queryClient.setQueryData(['currentUser'], data.user);
       
-      // Show success toast
       toast({
         title: 'Welcome back!',
         description: `Logged in as ${data.user.email}`,
       });
       
-      // Navigate to dashboard
-      navigate('/');
+      const from = (location.state as any)?.from?.pathname || '/';
+      navigate(from, { replace: true });
     },
     onError: (error: Error) => {
-      // Show error toast
       toast({
         title: 'Login failed',
         description: error.message || 'Invalid email or password',

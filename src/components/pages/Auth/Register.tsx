@@ -26,7 +26,6 @@ export const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Register form submitted'); // Debug log
     
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match!");
@@ -48,7 +47,6 @@ export const Register = () => {
         password: formData.password,
         role: formData.role as 'student' | 'teacher' | 'admin'
       });
-      // Clear form only on successful registration
       setFormData({
         firstName: '',
         lastName: '',
@@ -59,9 +57,6 @@ export const Register = () => {
       });
       navigate('/');
     } catch (error) {
-      // Log error for debugging
-      console.error('Registration error:', error);
-      // Clear only password fields on error, keep other data
       setFormData(prev => ({ 
         ...prev, 
         password: '', 

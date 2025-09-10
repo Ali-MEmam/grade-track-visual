@@ -31,32 +31,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         // Check if we have tokens
         if (tokenManager.hasTokens()) {
-          // Check if token is expired
-          if (tokenManager.isTokenExpired()) {
-            // Try to refresh the token
-            try {
-              await authService.refreshToken();
-            } catch (refreshError) {
-              // Refresh failed, clear tokens
-              tokenManager.clearTokens();
-              setIsLoading(false);
-              return;
-            }
-          }
-
           // Try to get current user from API
           try {
             const currentUser = await authService.getCurrentUser();
             setUser(currentUser);
           } catch (error) {
-            // API call failed, try to get user from token
-            const userFromToken = authService.getUserFromToken();
-            if (userFromToken) {
-              setUser(userFromToken);
-            } else {
-              // Can't get user info, clear tokens
-              tokenManager.clearTokens();
-            }
+            // Can't get user info, clear tokens
+            console.error("Error getting current user:", error);
+            tokenManager.clearTokens();
           }
         }
       } catch (error) {
@@ -70,37 +52,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<void> => {
-    setIsLoading(true);
-    try {
-      // Call the auth service to login
-      const response = await authService.login({ email, password });
-      // Set the user in state
-      setUser(response.user);
+  // Set authenticated user (called by useLogin hook after successful login)
+  const setAuthUser = (authUser: User) => {
+    setUser(authUser);
+  };
 
-      toast({
-        title: "Welcome back!",
-        description: `Logged in as ${response.user.email}`,
-      });
-    } catch (error: any) {
-      toast({
-        title: "Login failed",
-        description: error.message || "Invalid email or password.",
-        variant: "destructive",
-      });
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
+  // Simple login method that delegates to the service
+  // The actual login logic is handled by the useLogin hook
+  const login = async (email: string, password: string): Promise<void> => {
+    // This method is kept for backwards compatibility
+    // but the actual implementation should use the useLogin hook
+    throw new Error("Please use the useLogin hook for login functionality");
   };
 
   const register = async (userData: RegisterRequest): Promise<void> => {
     setIsLoading(true);
     try {
-      // Call the auth service to register
       const response = await authService.register(userData);
-
-      // Set the user in state
       setUser(response.user);
 
       toast({
@@ -135,19 +103,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const refreshToken = async (): Promise<void> => {
-    try {
-      await authService.refreshToken();
-      // Optionally refresh user data after token refresh
-      const currentUser = await authService.getCurrentUser();
-      setUser(currentUser);
-    } catch (error) {
-      // Token refresh failed, clear auth state
-      setUser(null);
-      tokenManager.clearTokens();
-      throw error;
-    }
-  };
 
   const value: AuthContextType = {
     user,
@@ -156,7 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     login,
     register,
     logout,
-    refreshToken,
+    setAuthUser, // Add the new method
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
