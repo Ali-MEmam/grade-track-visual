@@ -16,6 +16,8 @@ import { Analysis } from '@/components/pages/Analysis/Analysis';
 import { Classes } from '@/components/pages/Classes/Classes';
 import { Syllabus } from '@/components/pages/Syllabus/Syllabus';
 import { Reports } from '@/components/pages/Reports/Reports';
+import { Schools } from '@/components/pages/Schools/Schools';
+import { School } from '@/components/pages/Schools/school/School';
 import { Login } from '@/components/pages/Auth/Login';
 import { Register } from '@/components/pages/Auth/Register';
 
@@ -69,6 +71,8 @@ export const Routes: React.FC = () => {
                   } 
                 />
                 <Route path="/classes" element={<Classes />} />
+                <Route path="/schools" element={<Schools />} />
+                <Route path="/schools/:id" element={<School />} />
                 <Route path="/syllabus" element={<Syllabus />} />
                 <Route 
                   path="/reports" 

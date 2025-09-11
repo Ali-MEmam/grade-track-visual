@@ -28,10 +28,10 @@ export const ClassesList = ({
 }: ClassesListProps) => {
   const [filters, setFilters] = useState<ClassFilters>({
     search: "",
-    subject: "",
-    teacher: "",
-    status: "",
-    schedule: "",
+    subject: "all",
+    teacher: "all",
+    status: "all",
+    schedule: "all",
   });
 
   const [selectedClass, setSelectedClass] = useState<ClassData | null>(null);
@@ -73,14 +73,14 @@ export const ClassesList = ({
           .includes(filters.search.toLowerCase());
 
       const matchesSubject =
-        filters.subject === "" || classItem.subject === filters.subject;
+        filters.subject === "all" || classItem.subject === filters.subject;
       const matchesTeacher =
-        filters.teacher === "" || classItem.teacher.id === filters.teacher;
+        filters.teacher === "all" || classItem.teacher.id === filters.teacher;
       const matchesStatus =
-        filters.status === "" || classItem.status === filters.status;
+        filters.status === "all" || classItem.status === filters.status;
 
       const matchesSchedule =
-        filters.schedule === "" ||
+        filters.schedule === "all" ||
         (() => {
           const time = classItem.schedule.time.toLowerCase();
           switch (filters.schedule) {

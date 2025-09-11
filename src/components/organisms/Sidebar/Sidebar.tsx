@@ -9,6 +9,7 @@ import {
   FileText,
   Bell,
   ClipboardList,
+  School,
 } from "lucide-react";
 import Logo from "@/assets/logo.jpeg";
 import {
@@ -27,6 +28,7 @@ const navigationItems = [
   { title: "Students", url: "/students", icon: Users },
   { title: "Teachers", url: "/teachers", icon: GraduationCap },
   { title: "Classes", url: "/classes", icon: BookOpen },
+  { title: "Schools", url: "/schools", icon: School },
   { title: "Syllabus", url: "/syllabus", icon: ClipboardList },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Reports", url: "/reports", icon: FileText },

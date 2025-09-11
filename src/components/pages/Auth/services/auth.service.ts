@@ -39,6 +39,9 @@ class AuthService {
       tokenManager.setTokens({
         accessToken: token,
       });
+      
+      // Store user data in localStorage
+      tokenManager.setUser(mappedUser);
 
       return {
         user: mappedUser,
@@ -57,11 +60,16 @@ class AuthService {
       );
 
       if (response.data.success && response.data.data) {
-        const { accessToken } = response.data.data;
+        const { accessToken, user } = response.data.data;
 
         tokenManager.setTokens({
           accessToken,
         });
+        
+        // Store user data if available
+        if (user) {
+          tokenManager.setUser(user);
+        }
 
         return response.data.data;
       }
@@ -83,12 +91,21 @@ class AuthService {
 
 
   async getCurrentUser(): Promise<User> {
+    // First try to get user from localStorage
+    const storedUser = tokenManager.getUser();
+    if (storedUser) {
+      return storedUser as User;
+    }
+    
+    // If no stored user, try API (though this might fail if endpoint doesn't exist)
     try {
       const response = await axiosInstance.get<ApiResponse<User>>(
         this.endpoints.me
       );
 
       if (response.data.success && response.data.data) {
+        // Store the fetched user for future use
+        tokenManager.setUser(response.data.data);
         return response.data.data;
       }
 

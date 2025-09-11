@@ -1,6 +1,7 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/organisms/Sidebar/Sidebar";
 import { BottomNavigation } from "@/components/organisms/BottomNavigation/BottomNavigation";
+import { Breadcrumbs } from "@/components/molecules/Breadcrumbs/Breadcrumbs";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/atoms/Button/Button";
 import { LogOut, User } from "lucide-react";
@@ -37,6 +38,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </Button>
           </div>
         </header>
+        <Breadcrumbs />
         <main className="p-4 pb-28 overflow-auto">{children}</main>
         <BottomNavigation />
       </div>
@@ -68,6 +70,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               </Button>
             </div>
           </header>
+          <Breadcrumbs />
           <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
             {children}
           </main>

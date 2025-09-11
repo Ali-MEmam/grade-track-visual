@@ -47,14 +47,18 @@ export const ClassFilters = ({
   const clearFilters = () => {
     onFiltersChange({
       search: "",
-      subject: "",
-      teacher: "",
-      status: "",
-      schedule: "",
+      subject: "all",
+      teacher: "all",
+      status: "all",
+      schedule: "all",
     });
   };
 
-  const hasActiveFilters = Object.values(filters).some((value) => value !== "");
+  const hasActiveFilters = filters.search !== "" || 
+    (filters.subject !== "" && filters.subject !== "all") ||
+    (filters.teacher !== "" && filters.teacher !== "all") ||
+    (filters.status !== "" && filters.status !== "all") ||
+    (filters.schedule !== "" && filters.schedule !== "all");
 
   return (
     <Card className={className}>
@@ -81,7 +85,7 @@ export const ClassFilters = ({
             Filters
             {hasActiveFilters && (
               <span className="bg-primary text-primary-foreground rounded-full text-xs h-5 w-5 flex items-center justify-center">
-                {Object.values(filters).filter((v) => v !== "").length}
+                {Object.values(filters).filter((v) => v !== "" && v !== "all").length}
               </span>
             )}
           </Button>
@@ -112,7 +116,7 @@ export const ClassFilters = ({
                   <SelectValue placeholder="All Subjects" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Subjects</SelectItem>
+                  <SelectItem value="all">All Subjects</SelectItem>
                   {subjects.map((subject) => (
                     <SelectItem key={subject} value={subject}>
                       {subject}
@@ -132,7 +136,7 @@ export const ClassFilters = ({
                   <SelectValue placeholder="All Teachers" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Teachers</SelectItem>
+                  <SelectItem value="all">All Teachers</SelectItem>
                   {teachers.map((teacher) => (
                     <SelectItem key={teacher.id} value={teacher.id}>
                       {teacher.name}
@@ -152,7 +156,7 @@ export const ClassFilters = ({
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Statuses</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="inactive">Inactive</SelectItem>
                   <SelectItem value="archived">Archived</SelectItem>
@@ -170,7 +174,7 @@ export const ClassFilters = ({
                   <SelectValue placeholder="All Schedules" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Schedules</SelectItem>
+                  <SelectItem value="all">All Schedules</SelectItem>
                   <SelectItem value="morning">Morning</SelectItem>
                   <SelectItem value="afternoon">Afternoon</SelectItem>
                   <SelectItem value="evening">Evening</SelectItem>

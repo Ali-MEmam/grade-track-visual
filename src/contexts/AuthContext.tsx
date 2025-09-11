@@ -31,13 +31,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         // Check if we have tokens
         if (tokenManager.hasTokens()) {
-          // Try to get current user from API
-          try {
-            const currentUser = await authService.getCurrentUser();
-            setUser(currentUser);
-          } catch (error) {
-            // Can't get user info, clear tokens
-            console.error("Error getting current user:", error);
+          // Try to get user from localStorage first
+          const storedUser = tokenManager.getUser();
+          if (storedUser) {
+            setUser(storedUser);
+          } else {
+            // If no stored user but we have tokens, clear everything
+            // This shouldn't happen in normal flow but handles edge cases
             tokenManager.clearTokens();
           }
         }
@@ -55,6 +55,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Set authenticated user (called by useLogin hook after successful login)
   const setAuthUser = (authUser: User) => {
     setUser(authUser);
+    // Also update localStorage when user is set
+    tokenManager.setUser(authUser);
   };
 
   // Simple login method that delegates to the service
@@ -70,6 +72,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await authService.register(userData);
       setUser(response.user);
+      // Store user in localStorage
+      tokenManager.setUser(response.user);
 
       toast({
         title: "Account created!",
