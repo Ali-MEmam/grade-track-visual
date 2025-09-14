@@ -1,8 +1,16 @@
-import { Card, CardContent, CardHeader } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Button } from "@/components/atoms/Button/Button";
+import { Card } from "@/components/atoms/Card/Card";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, GraduationCap, Mail, Phone, BookOpen, MoreVertical } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Plus, Search, MoreVertical, Edit, Trash2, Eye, Calendar, BookOpen } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -101,108 +109,120 @@ export const SchoolTeachers = ({ schoolId }: SchoolTeachersProps) => {
         />
       </div>
 
-      {/* Teachers Grid */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {filteredTeachers.map((teacher) => (
-          <Card key={teacher.id} className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4 flex-1">
-                  {/* Avatar */}
-                  <img
-                    src={teacher.avatar}
-                    alt={teacher.name}
-                    className="w-12 h-12 rounded-full"
-                  />
-                  
-                  {/* Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold">{teacher.name}</h3>
-                      <Badge 
-                        variant={teacher.status === "active" ? "success" : "warning"}
-                        className="text-xs"
-                      >
-                        {teacher.status}
-                      </Badge>
-                    </div>
-
-                    {/* Subjects */}
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {teacher.subjects.map((subject, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {subject}
-                        </Badge>
-                      ))}
-                    </div>
-                    
-                    <div className="space-y-1 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Mail className="h-3 w-3" />
-                        <span className="truncate">{teacher.email}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Phone className="h-3 w-3" />
-                        <span>{teacher.phone}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <GraduationCap className="h-3 w-3" />
-                        <span>{teacher.qualification}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <BookOpen className="h-3 w-3" />
-                        <span>{teacher.experience}</span>
-                      </div>
+      {/* Teachers Table */}
+      <Card>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[350px]">Teacher</TableHead>
+              <TableHead>Subjects</TableHead>
+              <TableHead className="hidden md:table-cell">Qualification</TableHead>
+              <TableHead className="hidden sm:table-cell">Experience</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredTeachers.map((teacher) => (
+              <TableRow key={teacher.id}>
+                <TableCell>
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={teacher.avatar}
+                      alt={teacher.name}
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div className="space-y-1">
+                      <p className="font-medium">{teacher.name}</p>
+                      <p className="text-xs text-muted-foreground">{teacher.email}</p>
+                      <p className="text-xs text-muted-foreground">{teacher.phone}</p>
                     </div>
                   </div>
-                </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-wrap gap-1">
+                    {teacher.subjects.map((subject, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {subject}
+                      </Badge>
+                    ))}
+                  </div>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  <span className="text-sm text-muted-foreground">{teacher.qualification}</span>
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <span className="text-sm text-muted-foreground">{teacher.experience}</span>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={teacher.status === "active" ? "outline" : "warning"}
+                    className={`text-xs ${
+                      teacher.status === "active"
+                        ? "border-green-500 text-green-700 dark:text-green-400"
+                        : ""
+                    }`}
+                  >
+                    {teacher.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        <Eye className="mr-2 h-4 w-4" />
+                        View Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit Teacher
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <BookOpen className="mr-2 h-4 w-4" />
+                        Assign Subjects
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Calendar className="mr-2 h-4 w-4" />
+                        View Schedule
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-destructive">
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Remove Teacher
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-                {/* Actions */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Edit Teacher</DropdownMenuItem>
-                    <DropdownMenuItem>Assign Subjects</DropdownMenuItem>
-                    <DropdownMenuItem>View Schedule</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive">
-                      Remove Teacher
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {filteredTeachers.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <GraduationCap className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
+        {/* Empty State */}
+        {filteredTeachers.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-lg font-semibold mb-2">
               {searchQuery ? "No Teachers Found" : "No Teachers"}
-            </h3>
-            <p className="text-sm text-muted-foreground text-center max-w-sm">
+            </p>
+            <p className="text-sm text-muted-foreground text-center max-w-sm mb-4">
               {searchQuery 
                 ? "No teachers match your search criteria. Try adjusting your search."
                 : "No teachers have been assigned to this school yet. Add teachers to manage classes."}
             </p>
             {!searchQuery && (
-              <Button className="mt-4">
+              <Button>
                 <Plus className="mr-2 h-4 w-4" />
                 Add First Teacher
               </Button>
             )}
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        )}
+      </Card>
     </div>
   );
 };

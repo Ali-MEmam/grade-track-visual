@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Button } from "@/components/atoms/Button/Button";
+import { Card } from "@/components/atoms/Card/Card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -9,7 +9,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Users, Mail, Phone, Calendar, MoreVertical, Filter } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Plus, Search, MoreVertical, Edit, Trash2, Eye, FileText, Users } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -168,114 +176,131 @@ export const SchoolStudents = ({ schoolId }: SchoolStudentsProps) => {
         </Select>
       </div>
 
-      {/* Students Table/Cards */}
-      <div className="grid gap-4">
-        {filteredStudents.map((student) => (
-          <Card key={student.id} className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4 flex-1">
-                  {/* Avatar */}
-                  <img
-                    src={student.avatar}
-                    alt={student.name}
-                    className="w-12 h-12 rounded-full"
-                  />
-                  
-                  {/* Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold">{student.name}</h3>
-                      <Badge variant="outline" className="text-xs">
-                        {student.rollNumber}
-                      </Badge>
-                      <Badge 
-                        variant={student.status === "active" ? "success" : "destructive"}
-                        className="text-xs"
-                      >
-                        {student.status}
-                      </Badge>
-                    </div>
-
-                    {/* Grade Info */}
-                    <div className="flex items-center gap-3 mb-3 text-sm">
-                      <Badge variant="secondary">
-                        {student.grade} - Section {student.section}
-                      </Badge>
-                      <span className="text-muted-foreground">
-                        GPA: <span className="font-medium text-foreground">{student.gpa}</span>
-                      </span>
-                      <span className="text-muted-foreground">
-                        Attendance: <span className="font-medium text-foreground">{student.attendance}</span>
-                      </span>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Mail className="h-3 w-3" />
-                        <span className="truncate">{student.email}</span>
+      {/* Students Table */}
+      <Card>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[350px]">Student</TableHead>
+              <TableHead>Grade/Section</TableHead>
+              <TableHead className="hidden md:table-cell">GPA</TableHead>
+              <TableHead className="hidden sm:table-cell">Attendance</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="hidden lg:table-cell">Enrolled</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredStudents.map((student) => (
+              <TableRow key={student.id}>
+                <TableCell>
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={student.avatar}
+                      alt={student.name}
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium">{student.name}</p>
+                        <Badge variant="outline" className="text-xs">
+                          {student.rollNumber}
+                        </Badge>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Phone className="h-3 w-3" />
-                        <span>{student.phone}</span>
-                      </div>
-                      <div className="flex items-center gap-1 sm:col-span-2">
-                        <Calendar className="h-3 w-3" />
-                        <span>Enrolled: {new Date(student.enrollmentDate).toLocaleDateString()}</span>
-                      </div>
+                      <p className="text-xs text-muted-foreground">{student.email}</p>
+                      <p className="text-xs text-muted-foreground">{student.phone}</p>
                     </div>
                   </div>
-                </div>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm">
+                    {student.grade} - {student.section}
+                  </span>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  <Badge variant="secondary" className="text-xs">
+                    {student.gpa}
+                  </Badge>
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <span className="text-sm text-muted-foreground">{student.attendance}</span>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={student.status === "active" ? "outline" : "destructive"}
+                    className={`text-xs ${
+                      student.status === "active"
+                        ? "border-green-500 text-green-700 dark:text-green-400"
+                        : ""
+                    }`}
+                  >
+                    {student.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="hidden lg:table-cell">
+                  <span className="text-sm text-muted-foreground">
+                    {new Date(student.enrollmentDate).toLocaleDateString()}
+                  </span>
+                </TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        <Eye className="mr-2 h-4 w-4" />
+                        View Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <FileText className="mr-2 h-4 w-4" />
+                        Academic Records
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Users className="mr-2 h-4 w-4" />
+                        Contact Parents
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit Student
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-destructive">
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Remove Student
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-                {/* Actions */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Academic Records</DropdownMenuItem>
-                    <DropdownMenuItem>Attendance Report</DropdownMenuItem>
-                    <DropdownMenuItem>Contact Parents</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Edit Student</DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">
-                      Remove Student
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {filteredStudents.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Users className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
+        {/* Empty State */}
+        {filteredStudents.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-lg font-semibold mb-2">
               {searchQuery || gradeFilter !== "all" || statusFilter !== "all" 
                 ? "No Students Found" 
                 : "No Students"}
-            </h3>
-            <p className="text-sm text-muted-foreground text-center max-w-sm">
+            </p>
+            <p className="text-sm text-muted-foreground text-center max-w-sm mb-4">
               {searchQuery || gradeFilter !== "all" || statusFilter !== "all"
                 ? "No students match your search criteria. Try adjusting your filters."
                 : "No students have been enrolled in this school yet. Start enrolling students."}
             </p>
             {!searchQuery && gradeFilter === "all" && statusFilter === "all" && (
-              <Button className="mt-4">
+              <Button>
                 <Plus className="mr-2 h-4 w-4" />
                 Enroll First Student
               </Button>
             )}
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        )}
+      </Card>
 
       {/* Summary */}
       {filteredStudents.length > 0 && (

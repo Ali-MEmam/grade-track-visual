@@ -149,8 +149,8 @@ export const SchoolSidebar = ({ school }: SchoolSidebarProps) => {
               <p className="text-sm">
                 <span className="font-medium">Status:</span>{" "}
                 <Badge
-                  variant={school.isDeleted ? "destructive" : "success"}
-                  className="text-xs ml-1"
+                  variant={school.isDeleted ? "destructive" : "outline"}
+                  className={`text-xs ml-1 ${!school.isDeleted ? "border-green-500 text-green-700 dark:text-green-400" : ""}`}
                 >
                   {school.isDeleted ? "Deleted" : "Active"}
                 </Badge>

@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SchoolSidebar } from "./Components/SchoolSidebar";
-import { SchoolAdmins } from "./Components/SchoolAdmins";
+import { SchoolAdmins } from "./SchoolAdmin/SchoolAdmins";
 import { SchoolTeachers } from "./Components/SchoolTeachers";
 import { SchoolStudents } from "./Components/SchoolStudents";
 import { useSchoolDetails } from "./apis/useSchoolDetails";
@@ -22,7 +22,7 @@ export const School = () => {
     if (school) {
       setCustomLabel(`/schools/${id}`, school.nameEn);
     }
-    
+
     // Clean up when component unmounts
     return () => {
       clearCustomLabel(`/schools/${id}`);
@@ -56,33 +56,33 @@ export const School = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Sidebar */}
-        <div className="lg:col-span-3">
-          <SchoolSidebar school={school} />
-        </div>
+      {/* Sidebar */}
+      <div className="lg:col-span-3">
+        <SchoolSidebar school={school} />
+      </div>
 
-        {/* Tabs Content */}
-        <div className="lg:col-span-9 space-y-6">
-          <Tabs defaultValue="admins" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="admins">School Admins</TabsTrigger>
-              <TabsTrigger value="teachers">Teachers</TabsTrigger>
-              <TabsTrigger value="students">Students</TabsTrigger>
-            </TabsList>
+      {/* Tabs Content */}
+      <div className="lg:col-span-9 space-y-6">
+        <Tabs defaultValue="admins" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="admins">School Admins</TabsTrigger>
+            <TabsTrigger value="teachers">Teachers</TabsTrigger>
+            <TabsTrigger value="students">Students</TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="admins" className="mt-6">
-              <SchoolAdmins schoolId={school.id} />
-            </TabsContent>
+          <TabsContent value="admins" className="mt-6">
+            <SchoolAdmins schoolId={school.id} />
+          </TabsContent>
 
-            <TabsContent value="teachers" className="mt-6">
-              <SchoolTeachers schoolId={school.id} />
-            </TabsContent>
+          <TabsContent value="teachers" className="mt-6">
+            <SchoolTeachers schoolId={school.id} />
+          </TabsContent>
 
-            <TabsContent value="students" className="mt-6">
-              <SchoolStudents schoolId={school.id} />
-            </TabsContent>
-          </Tabs>
-        </div>
+          <TabsContent value="students" className="mt-6">
+            <SchoolStudents schoolId={school.id} />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
