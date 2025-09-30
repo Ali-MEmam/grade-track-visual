@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { FormInput } from "@/components/molecules/FormInput/FormInput";
 import { Button } from "@/components/atoms/Button/Button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Plus } from "lucide-react";
@@ -36,7 +36,7 @@ type CreateSchoolAdminFormData = z.infer<typeof createSchoolAdminSchema>;
 interface AddSchoolAdminModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: Omit<CreateSchoolAdminRequest, 'schoolId'>) => Promise<void>;
+  onSubmit: (data: Omit<CreateSchoolAdminRequest, "schoolId">) => Promise<void>;
 }
 
 export const AddSchoolAdminModal = ({
@@ -79,35 +79,38 @@ export const AddSchoolAdminModal = ({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col flex-1">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="flex flex-col flex-1"
+          >
             <div className="flex-1 overflow-y-auto px-1 space-y-4">
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter first name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  render={({ field, fieldState }) => (
+                    <FormInput
+                      label="First Name"
+                      placeholder="Enter first name"
+                      isRequired
+                      error={fieldState.error?.message}
+                      {...field}
+                    />
                   )}
                 />
 
                 <FormField
                   control={form.control}
                   name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter last name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  render={({ field, fieldState }) => (
+                    <FormInput
+                      label="Last Name"
+                      placeholder="Enter last name"
+                      isRequired
+                      error={fieldState.error?.message}
+                      {...field}
+                    />
                   )}
                 />
               </div>
@@ -117,35 +120,29 @@ export const AddSchoolAdminModal = ({
                 <FormField
                   control={form.control}
                   name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="admin@school.edu"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  render={({ field, fieldState }) => (
+                    <FormInput
+                      label="Email"
+                      type="email"
+                      placeholder="admin@school.edu"
+                      isRequired
+                      error={fieldState.error?.message}
+                      {...field}
+                    />
                   )}
                 />
 
                 <FormField
                   control={form.control}
                   name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="+1 (555) 000-0000"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  render={({ field, fieldState }) => (
+                    <FormInput
+                      label="Phone"
+                      placeholder="+1 (555) 000-0000"
+                      isRequired
+                      error={fieldState.error?.message}
+                      {...field}
+                    />
                   )}
                 />
               </div>
@@ -154,17 +151,14 @@ export const AddSchoolAdminModal = ({
               <FormField
                 control={form.control}
                 name="position"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Position</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Principal, Vice Principal, Academic Director"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                render={({ field, fieldState }) => (
+                  <FormInput
+                    label="Position"
+                    placeholder="e.g., Principal, Vice Principal, Academic Director"
+                    isRequired
+                    error={fieldState.error?.message}
+                    {...field}
+                  />
                 )}
               />
 

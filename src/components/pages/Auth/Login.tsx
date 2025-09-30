@@ -8,8 +8,7 @@ import {
   CardTitle,
 } from "@/components/atoms/Card/Card";
 import { Button } from "@/components/atoms/Button/Button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormInput } from "@/components/molecules/FormInput/FormInput";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useLogin } from "@/components/pages/Auth/apis/useLogin";
 
@@ -51,45 +50,41 @@ export const Login = () => {
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full"
-              />
-            </div>
+            <FormInput
+              label="Email"
+              id="email"
+              name="email"
+              // type="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+              isRequired
+              className="w-full"
+            />
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="w-full pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
+            <div className="relative">
+              <FormInput
+                label="Password"
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                isRequired
+                className="w-full pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-9 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
             </div>
 
             <div className="flex items-center justify-between text-sm">
