@@ -2,15 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -21,6 +12,7 @@ import {
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { X, Plus } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
+import { FormModal } from "@/components/molecules/FormModal";
 import { CreateTeacherRequest } from "../types/teacher.types";
 
 interface AddTeacherModalProps {
@@ -64,8 +56,7 @@ export const AddTeacherModal = ({ isOpen, onClose, onSubmit }: AddTeacherModalPr
   const [newSubject, setNewSubject] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (subjects.length === 0) {
       alert("Please add at least one subject");
       return;
@@ -119,16 +110,15 @@ export const AddTeacherModal = ({ isOpen, onClose, onSubmit }: AddTeacherModalPr
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add New Teacher</DialogTitle>
-          <DialogDescription>
-            Add a new teacher to the school with their subjects and qualifications.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <FormModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Add New Teacher"
+      description="Add a new teacher to the school with their subjects and class assignments."
+      onSubmit={handleSubmit}
+      submitLabel="Add Teacher"
+      isSubmitting={isSubmitting}
+    >
           {/* Personal Information */}
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -292,16 +282,6 @@ export const AddTeacherModal = ({ isOpen, onClose, onSubmit }: AddTeacherModalPr
             </Select>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Adding..." : "Add Teacher"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    </FormModal>
   );
 };

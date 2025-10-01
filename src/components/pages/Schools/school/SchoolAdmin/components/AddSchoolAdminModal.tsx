@@ -3,12 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormField,
@@ -17,9 +11,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { FormInput } from "@/components/molecules/FormInput/FormInput";
-import { Button } from "@/components/atoms/Button/Button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Plus } from "lucide-react";
+import { FormModal } from "@/components/molecules/FormModal";
 import { CreateSchoolAdminRequest } from "../types/school-admin.types";
 
 const createSchoolAdminSchema = z.object({
@@ -58,7 +51,11 @@ export const AddSchoolAdminModal = ({
     },
   });
 
-  const handleSubmit = async (data: CreateSchoolAdminFormData) => {
+  const handleFormSubmit = async () => {
+    const isValid = await form.trigger();
+    if (!isValid) return;
+
+    const data = form.getValues();
     setIsSubmitting(true);
     try {
       await onSubmit(data);
@@ -72,18 +69,18 @@ export const AddSchoolAdminModal = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
-        <DialogHeader>
-          <DialogTitle>Add School Administrator</DialogTitle>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col flex-1"
-          >
-            <div className="flex-1 overflow-y-auto px-1 space-y-4">
+    <FormModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Add School Administrator"
+      description="Add a new administrator to manage school operations."
+      onSubmit={handleFormSubmit}
+      submitLabel="Add Administrator"
+      isSubmitting={isSubmitting}
+      maxWidth="700px"
+    >
+      <Form {...form}>
+        <div className="space-y-4">
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -180,35 +177,8 @@ export const AddSchoolAdminModal = ({
                   </FormItem>
                 )}
               />
-            </div>
-
-            {/* Footer with buttons */}
-            <div className="flex justify-end gap-3 pt-4 mt-4 border-t">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Adding...
-                  </>
-                ) : (
-                  <>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Administrator
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </Form>
+    </FormModal>
   );
 };
