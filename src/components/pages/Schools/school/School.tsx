@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SchoolSidebar } from "./Components/SchoolSidebar";
 import { SchoolAdmins } from "./SchoolAdmin/SchoolAdmins";
-import { SchoolTeachers } from "./Components/SchoolTeachers";
+import { Teachers } from "./Teachers/Teachers";
 import { SchoolStudents } from "./Components/SchoolStudents";
 import { useSchoolDetails } from "./apis/useSchoolDetails";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
@@ -75,7 +75,7 @@ export const School = () => {
           </TabsContent>
 
           <TabsContent value="teachers" className="mt-6">
-            <SchoolTeachers schoolId={school.id} />
+            <Teachers schoolId={school.id} />
           </TabsContent>
 
           <TabsContent value="students" className="mt-6">
