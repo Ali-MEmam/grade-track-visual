@@ -1,13 +1,38 @@
 import { Card, CardContent, CardHeader } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
+import { Button } from "@/components/atoms/Button/Button";
 import { School } from "../../types/schools.types";
-import { MapPin, Phone, Mail, Globe, Calendar, BookOpen } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Calendar, BookOpen, Users, GraduationCap, UserCog, School2 } from "lucide-react";
 
 interface SchoolSidebarProps {
   school: School;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }
 
-export const SchoolSidebar = ({ school }: SchoolSidebarProps) => {
+export const SchoolSidebar = ({ school, activeTab, onTabChange }: SchoolSidebarProps) => {
+  const navigationItems = [
+    {
+      id: "admins",
+      label: "School Admins",
+      icon: UserCog,
+    },
+    {
+      id: "teachers", 
+      label: "Teachers",
+      icon: Users,
+    },
+    {
+      id: "classes", 
+      label: "Classes",
+      icon: School2,
+    },
+    {
+      id: "students",
+      label: "Students", 
+      icon: GraduationCap,
+    },
+  ];
   return (
     <Card className="sticky top-4">
       <CardHeader className="pb-4">
@@ -156,6 +181,36 @@ export const SchoolSidebar = ({ school }: SchoolSidebarProps) => {
                 </Badge>
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="space-y-3 border-t pt-4">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Management
+          </h3>
+
+          <div className="space-y-1">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+              
+              return (
+                <Button
+                  key={item.id}
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={`w-full justify-start h-10 px-3 ${
+                    isActive 
+                      ? "bg-primary/10 text-primary border-l-2 border-l-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  onClick={() => onTabChange(item.id)}
+                >
+                  <Icon className="h-4 w-4 mr-3" />
+                  <span className="text-sm">{item.label}</span>
+                </Button>
+              );
+            })}
           </div>
         </div>
       </CardContent>

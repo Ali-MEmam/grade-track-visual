@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from "react";
 import { SchoolSidebar } from "./Components/SchoolSidebar";
 import { SchoolAdmins } from "./SchoolAdmin/SchoolAdmins";
 import { Teachers } from "./Teachers/Teachers";
+import { Classes } from "./Classes/Classes";
 import { SchoolStudents } from "./Components/SchoolStudents";
 import { useSchoolDetails } from "./apis/useSchoolDetails";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
@@ -16,6 +16,7 @@ export const School = () => {
   const navigate = useNavigate();
   const { setCustomLabel, clearCustomLabel } = useBreadcrumb();
   const { data: school, isLoading, error } = useSchoolDetails(id || "");
+  const [activeTab, setActiveTab] = useState("admins");
 
   // Set the school name in breadcrumb when data is loaded
   useEffect(() => {
@@ -54,34 +55,35 @@ export const School = () => {
     );
   }
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case "admins":
+        return <SchoolAdmins schoolId={school.id} />;
+      case "teachers":
+        return <Teachers schoolId={school.id} />;
+      case "classes":
+        return <Classes schoolId={school.id} />;
+      case "students":
+        return <SchoolStudents schoolId={school.id} />;
+      default:
+        return <SchoolAdmins schoolId={school.id} />;
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Sidebar */}
       <div className="lg:col-span-3">
-        <SchoolSidebar school={school} />
+        <SchoolSidebar 
+          school={school} 
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
       </div>
 
-      {/* Tabs Content */}
-      <div className="lg:col-span-9 space-y-6">
-        <Tabs defaultValue="admins" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="admins">School Admins</TabsTrigger>
-            <TabsTrigger value="teachers">Teachers</TabsTrigger>
-            <TabsTrigger value="students">Students</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="admins" className="mt-6">
-            <SchoolAdmins schoolId={school.id} />
-          </TabsContent>
-
-          <TabsContent value="teachers" className="mt-6">
-            <Teachers schoolId={school.id} />
-          </TabsContent>
-
-          <TabsContent value="students" className="mt-6">
-            <SchoolStudents schoolId={school.id} />
-          </TabsContent>
-        </Tabs>
+      {/* Content */}
+      <div className="lg:col-span-9">
+        {renderContent()}
       </div>
     </div>
   );
