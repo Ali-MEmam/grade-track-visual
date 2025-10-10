@@ -4,7 +4,9 @@ import { SchoolSidebar } from "./Components/SchoolSidebar";
 import { SchoolAdmins } from "./SchoolAdmin/SchoolAdmins";
 import { Teachers } from "./Teachers/Teachers";
 import { Classes } from "./Classes/Classes";
-import { SchoolStudents } from "./Components/SchoolStudents";
+import { Students } from "./Students/Students";
+import { EducationLevels } from "./EducationLevels/EducationLevels";
+import { EducationSystems } from "./EducationSystems/EducationSystems";
 import { useSchoolDetails } from "./apis/useSchoolDetails";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { Loader2, ArrowLeft } from "lucide-react";
@@ -64,7 +66,11 @@ export const School = () => {
       case "classes":
         return <Classes schoolId={school.id} />;
       case "students":
-        return <SchoolStudents schoolId={school.id} />;
+        return <Students schoolId={school.id} />;
+      case "education-levels":
+        return <EducationLevels schoolId={school.id} />;
+      case "education-systems":
+        return <EducationSystems schoolId={school.id} />;
       default:
         return <SchoolAdmins schoolId={school.id} />;
     }

@@ -219,6 +219,7 @@ export const Teachers = ({ schoolId }: TeachersProps) => {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSubmit={createTeacherMutation.mutateAsync}
+        schoolId={schoolId}
       />
     </div>
   );

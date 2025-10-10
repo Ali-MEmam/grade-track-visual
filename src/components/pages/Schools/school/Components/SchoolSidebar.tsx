@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Button } from "@/components/atoms/Button/Button";
 import { School } from "../../types/schools.types";
-import { MapPin, Phone, Mail, Globe, Calendar, BookOpen, Users, GraduationCap, UserCog, School2 } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Calendar, BookOpen, Users, GraduationCap, UserCog, School2, Layers, Settings } from "lucide-react";
 
 interface SchoolSidebarProps {
   school: School;
@@ -18,19 +18,29 @@ export const SchoolSidebar = ({ school, activeTab, onTabChange }: SchoolSidebarP
       icon: UserCog,
     },
     {
-      id: "teachers", 
+      id: "teachers",
       label: "Teachers",
       icon: Users,
     },
     {
-      id: "classes", 
+      id: "classes",
       label: "Classes",
       icon: School2,
     },
     {
       id: "students",
-      label: "Students", 
+      label: "Students",
       icon: GraduationCap,
+    },
+    {
+      id: "education-levels",
+      label: "Education Levels",
+      icon: Layers,
+    },
+    {
+      id: "education-systems",
+      label: "Education Systems",
+      icon: Settings,
     },
   ];
   return (
