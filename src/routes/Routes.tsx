@@ -18,6 +18,8 @@ import { Syllabus } from '@/components/pages/Syllabus/Syllabus';
 import { Reports } from '@/components/pages/Reports/Reports';
 import { Schools } from '@/components/pages/Schools/Schools';
 import { School } from '@/components/pages/Schools/school/School';
+import { EducationLevels } from '@/components/pages/EducationLevels/EducationLevels';
+import { EducationSystems } from '@/components/pages/EducationSystems/EducationSystems';
 import { Login } from '@/components/pages/Auth/Login';
 import { Register } from '@/components/pages/Auth/Register';
 
@@ -50,29 +52,24 @@ export const Routes: React.FC = () => {
             <DashboardLayout>
               <RouterRoutes>
                 <Route path="/" element={<Index />} />
-                <Route path="/students" element={<Students />} />
-                <Route 
-                  path="/teachers" 
-                  element={
-                    <PrivateRoute requiredRole="admin">
-                      <Teachers />
-                    </PrivateRoute>
-                  } 
-                />
+                <Route path="/students" element={<Students schoolId="" />} />
+                <Route path="/teachers" element={<Teachers schoolId="" />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route 
-                  path="/analytics" 
+                <Route
+                  path="/analytics"
                   element={
                     <PrivateRoute requiredRole="admin">
                       <Analysis />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route path="/classes" element={<Classes />} />
                 <Route path="/schools" element={<Schools />} />
                 <Route path="/schools/:id" element={<School />} />
+                <Route path="/education-levels" element={<EducationLevels schoolId="" />} />
+                <Route path="/education-systems" element={<EducationSystems schoolId="" />} />
                 <Route path="/syllabus" element={<Syllabus />} />
                 <Route 
                   path="/reports" 

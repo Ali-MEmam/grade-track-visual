@@ -10,6 +10,8 @@ import {
   Bell,
   ClipboardList,
   School,
+  Layers,
+  Network,
 } from "lucide-react";
 import Logo from "@/assets/logo.jpeg";
 import {
@@ -29,6 +31,8 @@ const navigationItems = [
   { title: "Teachers", url: "/teachers", icon: GraduationCap },
   { title: "Classes", url: "/classes", icon: BookOpen },
   { title: "Schools", url: "/schools", icon: School },
+  { title: "Education Levels", url: "/education-levels", icon: Layers },
+  { title: "Education Systems", url: "/education-systems", icon: Network },
   { title: "Syllabus", url: "/syllabus", icon: ClipboardList },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Reports", url: "/reports", icon: FileText },

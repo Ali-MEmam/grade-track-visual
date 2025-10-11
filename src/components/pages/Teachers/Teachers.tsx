@@ -1,151 +1,226 @@
-import { Button } from "@/components/atoms/Button/Button";
-import {
-  DataTable,
-  TableHeader,
-} from "@/components/molecules/DataTable/DataTable";
-import { Pagination } from "@/components/molecules/Pagination/Pagination";
-import { Card } from "@/components/ui/card";
-import { Plus } from "lucide-react";
 import { useState } from "react";
-import { TeacherFilter } from "./Components/Filters";
-import { TableActions } from "./Components/TableActions.Teacher";
-import { TableCell } from "./Components/TableCell";
+import { Badge } from "@/components/atoms/Badge/Badge";
+import { Button } from "@/components/atoms/Button/Button";
+import { Card } from "@/components/atoms/Card/Card";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Plus, Search, MoreVertical, Edit, Trash2, Eye, BookOpen, Calendar, Loader2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useTeachers } from "./hooks/useTeachers";
+import { useCreateTeacher } from "./hooks/useCreateTeacher";
+import { useDeleteTeacher } from "./hooks/useDeleteTeacher";
+import { AddTeacherModal } from "./components/AddTeacherModal";
 
-// Mock teacher data
-const teachersData = Array.from({ length: 30 }, (_, i) => ({
-  id: i + 1,
-  name: `Teacher ${i + 1}`,
-  email: `teacher${i + 1}@school.edu`,
-  subject: [
-    "Mathematics",
-    "Science",
-    "English",
-    "History",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "Art",
-    "Music",
-    "Physical Education",
-  ][Math.floor(Math.random() * 10)],
-  department: [
-    "Science",
-    "Mathematics",
-    "Languages",
-    "Social Studies",
-    "Arts",
-    "Physical Education",
-  ][Math.floor(Math.random() * 6)],
-  status: Math.random() > 0.1 ? "Active" : "Inactive",
-  hireDate: new Date(
-    2015 + Math.floor(Math.random() * 8),
-    Math.floor(Math.random() * 12),
-    Math.floor(Math.random() * 28) + 1
-  ).toLocaleDateString(),
-  experience: Math.floor(Math.random() * 20) + 1,
-  avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=teacher${i + 1}`,
-}));
+interface TeachersProps {
+  schoolId?: string;
+}
 
-const ITEMS_PER_PAGE = 10;
+export const Teachers = ({ schoolId = "" }: TeachersProps) => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-// Table headers configuration
-const tableHeaders: TableHeader[] = [
-  { key: "teacher", label: "Teacher" },
-  { key: "subject", label: "Subject", className: "hidden sm:table-cell" },
-  { key: "department", label: "Department", className: "hidden md:table-cell" },
-  { key: "status", label: "Status", className: "hidden lg:table-cell" },
-  {
-    key: "experience",
-    label: "Experience",
-    className: "hidden lg:table-cell",
-  },
-];
+  const { data: teachers = [], isLoading, error } = useTeachers(schoolId);
+  const createTeacherMutation = useCreateTeacher(schoolId);
+  const deleteTeacherMutation = useDeleteTeacher(schoolId);
 
-export function Teachers() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [subjectFilter, setSubjectFilter] = useState("all");
-  const [departmentFilter, setDepartmentFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedTeacher, setSelectedTeacher] = useState<any>(null);
-
-  // Filter teachers
-  const filteredTeachers = teachersData.filter((teacher) => {
-    const matchesSearch =
-      teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      teacher.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      teacher.subject.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSubject =
-      subjectFilter === "all" || teacher.subject === subjectFilter;
-    const matchesDepartment =
-      departmentFilter === "all" || teacher.department === departmentFilter;
-    const matchesStatus =
-      statusFilter === "all" ||
-      teacher.status.toLowerCase() === statusFilter.toLowerCase();
-
-    return (
-      matchesSearch && matchesSubject && matchesDepartment && matchesStatus
-    );
-  });
-
-  // Pagination
-  const totalPages = Math.ceil(filteredTeachers.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedTeachers = filteredTeachers.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
+  const filteredTeachers = teachers.filter(teacher =>
+    teacher.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    teacher.subjects.some(subject =>
+      subject.toLowerCase().includes(searchQuery.toLowerCase())
+    ) ||
+    teacher.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  const getStatusVariant = (isActive: boolean) => {
+    return isActive ? "outline" : "destructive";
+  };
+
+  const getStatusColor = (isActive: boolean) => {
+    return isActive
+      ? "border-green-500 text-green-700 dark:text-green-400"
+      : "";
   };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Teachers</h1>
-          <p className="text-muted-foreground">
-            Manage teacher records and information
+          <h2 className="text-xl font-semibold">Teachers</h2>
+          <p className="text-sm text-muted-foreground">
+            Manage teaching staff and their subject assignments
           </p>
         </div>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
+        <Button onClick={() => setIsAddModalOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
           Add Teacher
         </Button>
       </div>
 
-      <TeacherFilter
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        subjectFilter={subjectFilter}
-        setSubjectFilter={setSubjectFilter}
-        departmentFilter={departmentFilter}
-        setDepartmentFilter={setDepartmentFilter}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-      />
-      <Card>
-        {/* Teachers Table */}
-        <DataTable
-          headers={tableHeaders}
-          data={paginatedTeachers}
-          renderCell={TableCell}
-          renderActions={TableActions}
-          emptyMessage="No teachers found"
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search teachers by name, subject, or email..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
         />
+      </div>
 
-        {/* Pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          itemsPerPage={ITEMS_PER_PAGE}
-          totalItems={filteredTeachers.length}
-          showStatus={true}
-        />
+      {/* Teachers Table */}
+      <Card>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-destructive mb-2">Failed to load teachers</p>
+            <p className="text-sm text-muted-foreground">{error.message}</p>
+          </div>
+        ) : (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[350px]">Teacher</TableHead>
+                  <TableHead>Subjects</TableHead>
+                  <TableHead className="hidden md:table-cell">Classes</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredTeachers.map((teacher) => (
+                  <TableRow key={teacher.id}>
+                    <TableCell>
+                      <div className="flex items-start gap-3">
+                        <img
+                          src={teacher.avatar}
+                          alt={teacher.fullName}
+                          className="w-10 h-10 rounded-full"
+                        />
+                        <div className="space-y-1">
+                          <p className="font-medium">{teacher.fullName}</p>
+                          <p className="text-xs text-muted-foreground">{teacher.email}</p>
+                          <p className="text-xs text-muted-foreground">{teacher.phone}</p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {teacher.subjects.map((subject, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {subject}
+                          </Badge>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      <div className="flex flex-wrap gap-1">
+                        {teacher.classIds.map((classId, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {classId}
+                          </Badge>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={getStatusVariant(teacher.isActive)}
+                        className={`text-xs ${getStatusColor(teacher.isActive)}`}
+                      >
+                        {teacher.isActive ? "Active" : "Inactive"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem>
+                            <Eye className="mr-2 h-4 w-4" />
+                            View Profile
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edit Teacher
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <BookOpen className="mr-2 h-4 w-4" />
+                            Manage Subjects
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Calendar className="mr-2 h-4 w-4" />
+                            View Schedule
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => {
+                              if (confirm("Are you sure you want to remove this teacher?")) {
+                                deleteTeacherMutation.mutate(teacher.id);
+                              }
+                            }}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Remove Teacher
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            {/* Empty State */}
+            {filteredTeachers.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-12">
+                <p className="text-lg font-semibold mb-2">
+                  {searchQuery ? "No Teachers Found" : "No Teachers"}
+                </p>
+                <p className="text-sm text-muted-foreground text-center max-w-sm mb-4">
+                  {searchQuery
+                    ? "No teachers match your search criteria. Try adjusting your search."
+                    : "No teachers have been assigned to this school yet."}
+                </p>
+                {!searchQuery && (
+                  <Button onClick={() => setIsAddModalOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add First Teacher
+                  </Button>
+                )}
+              </div>
+            )}
+          </>
+        )}
       </Card>
+
+      {/* Add Teacher Modal */}
+      <AddTeacherModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={createTeacherMutation.mutateAsync}
+        schoolId={schoolId}
+      />
     </div>
   );
-}
+};
