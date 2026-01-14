@@ -33,7 +33,7 @@ export const Teachers = ({ schoolId = "" }: TeachersProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: teachers = [], isLoading, error } = useTeachers(schoolId);
-  const createTeacherMutation = useCreateTeacher(schoolId);
+  const createTeacherMutation = useCreateTeacher();
   const deleteTeacherMutation = useDeleteTeacher(schoolId);
 
   const filteredTeachers = teachers.filter(teacher =>
@@ -219,7 +219,7 @@ export const Teachers = ({ schoolId = "" }: TeachersProps) => {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSubmit={createTeacherMutation.mutateAsync}
-        schoolId={schoolId}
+        initialSchoolId={schoolId}
       />
     </div>
   );

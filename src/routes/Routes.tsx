@@ -22,26 +22,35 @@ import { EducationLevels } from '@/components/pages/EducationLevels/EducationLev
 import { EducationSystems } from '@/components/pages/EducationSystems/EducationSystems';
 import { Login } from '@/components/pages/Auth/Login';
 import { Register } from '@/components/pages/Auth/Register';
+import { ChangePassword } from '@/components/pages/Auth/ChangePassword';
 
 export const Routes: React.FC = () => {
   return (
     <RouterRoutes>
       {/* Public Routes */}
-      <Route 
-        path="/login" 
+      <Route
+        path="/login"
         element={
           <PublicRoute>
             <Login />
           </PublicRoute>
-        } 
+        }
       />
-      <Route 
-        path="/register" 
+      <Route
+        path="/register"
         element={
           <PublicRoute>
             <Register />
           </PublicRoute>
-        } 
+        }
+      />
+      <Route
+        path="/change-password"
+        element={
+          <PrivateRoute>
+            <ChangePassword />
+          </PrivateRoute>
+        }
       />
 
       {/* Private Routes with Dashboard Layout */}

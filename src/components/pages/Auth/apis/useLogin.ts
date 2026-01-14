@@ -24,12 +24,18 @@ export const useLogin = () => {
     onSuccess: (data) => {
       setAuthUser(data.user);
       queryClient.setQueryData(['currentUser'], data.user);
-      
+
       toast({
         title: 'Welcome back!',
         description: `Logged in as ${data.user.email}`,
       });
-      
+
+      // Check if user has temporary password
+      if (data.isTempPassword) {
+        navigate('/change-password', { replace: true });
+        return;
+      }
+
       const from = (location.state as any)?.from?.pathname || '/';
       navigate(from, { replace: true });
     },

@@ -10,18 +10,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/atoms/Badge/Badge";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Loader2 } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 import { FormModal } from "@/components/molecules/FormModal";
 import { FormSelect } from "@/components/molecules/FormSelect";
 import { useClasses } from "../../Schools/school/Classes/hooks/useClasses";
+import { useSchools } from "../../Schools/apis/useSchools";
 import { CreateTeacherRequest } from "../types/teacher.types";
 
 interface AddTeacherModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: Omit<CreateTeacherRequest, "schoolId">) => Promise<void>;
-  schoolId: string;
+  onSubmit: (data: CreateTeacherRequest) => Promise<void>;
+  initialSchoolId?: string;
 }
 
 const COMMON_SUBJECTS = [
@@ -49,7 +50,7 @@ export const AddTeacherModal = ({
   isOpen,
   onClose,
   onSubmit,
-  schoolId,
+  initialSchoolId = "",
 }: AddTeacherModalProps) => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -59,21 +60,33 @@ export const AddTeacherModal = ({
     isActive: true,
   });
 
+  const [selectedSchoolId, setSelectedSchoolId] = useState(initialSchoolId);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [selectedClassIds, setSelectedClassIds] = useState<string[]>([]);
   const [newSubject, setNewSubject] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fetch available classes
+  // Fetch available schools
+  const {
+    data: schools = [],
+    isLoading: isSchoolsLoading,
+  } = useSchools();
+
+  // Fetch available classes based on selected school
   const {
     data: classes = [],
     isLoading: isClassesLoading,
     error: classesError,
-  } = useClasses(schoolId);
+  } = useClasses(selectedSchoolId);
 
   const handleSubmit = async () => {
+    if (!selectedSchoolId) {
+      toast.error("Please select a school");
+      return;
+    }
+
     if (subjects.length === 0) {
-      alert("Please add at least one subject");
+      toast.error("Please add at least one subject");
       return;
     }
 
@@ -83,6 +96,7 @@ export const AddTeacherModal = ({
         ...formData,
         subjects,
         classIds: selectedClassIds,
+        schoolId: selectedSchoolId,
       });
 
       // Show success toast
@@ -99,6 +113,9 @@ export const AddTeacherModal = ({
       setSubjects([]);
       setSelectedClassIds([]);
       setNewSubject("");
+      if (!initialSchoolId) {
+        setSelectedSchoolId("");
+      }
       onClose();
     } catch (error) {
       console.error("Failed to create teacher:", error);
@@ -134,6 +151,39 @@ export const AddTeacherModal = ({
       submitLabel="Add Teacher"
       isSubmitting={isSubmitting}
     >
+      {/* School Selection */}
+      <div>
+        <Label htmlFor="school">
+          School <span className="text-destructive">*</span>
+        </Label>
+        {isSchoolsLoading ? (
+          <div className="flex items-center gap-2 h-10 px-3 border rounded-md bg-muted">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span className="text-sm text-muted-foreground">Loading schools...</span>
+          </div>
+        ) : (
+          <Select
+            value={selectedSchoolId}
+            onValueChange={(value) => {
+              setSelectedSchoolId(value);
+              setSelectedClassIds([]);
+            }}
+            disabled={!!initialSchoolId}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a school..." />
+            </SelectTrigger>
+            <SelectContent>
+              {schools.map((school) => (
+                <SelectItem key={school.id} value={school.id}>
+                  {school.nameEn}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      </div>
+
       {/* Personal Information */}
       <div className="grid grid-cols-2 gap-4">
         <div>

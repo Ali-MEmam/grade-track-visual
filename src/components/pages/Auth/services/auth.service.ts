@@ -7,6 +7,8 @@ import {
   RegisterResponse,
   User,
   ApiResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
 } from "@/components/pages/Auth/types/auth.types";
 
 class AuthService {
@@ -15,14 +17,15 @@ class AuthService {
     register: "/auth/register",
     logout: "/auth/logout",
     me: "/auth/me",
+    changePassword: "/authentication/password-reset",
   };
 
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
       const response = await axiosInstance.post<
-        ApiResponse<{ token: string; user: any }>
+        ApiResponse<{ token: string; user: any; isTempPassword?: boolean }>
       >(this.endpoints.login, credentials);
-      const { token, user } = response.data.data;
+      const { token, user, isTempPassword } = response.data.data;
       const mappedUser: User = {
         id: user?._id || user?.id,
         email: user.email,
@@ -39,13 +42,14 @@ class AuthService {
       tokenManager.setTokens({
         accessToken: token,
       });
-      
+
       // Store user data in localStorage
       tokenManager.setUser(mappedUser);
 
       return {
         user: mappedUser,
         accessToken: token,
+        isTempPassword,
       };
     } catch (error: any) {
       throw new Error(error.message || "Login failed. Please try again.");
@@ -65,7 +69,7 @@ class AuthService {
         tokenManager.setTokens({
           accessToken,
         });
-        
+
         // Store user data if available
         if (user) {
           tokenManager.setUser(user);
@@ -76,7 +80,9 @@ class AuthService {
 
       throw new Error(response.data.error?.message || "Registration failed");
     } catch (error: any) {
-      throw new Error(error.message || "Registration failed. Please try again.");
+      throw new Error(
+        error.message || "Registration failed. Please try again."
+      );
     }
   }
 
@@ -89,14 +95,13 @@ class AuthService {
     }
   }
 
-
   async getCurrentUser(): Promise<User> {
     // First try to get user from localStorage
     const storedUser = tokenManager.getUser();
     if (storedUser) {
       return storedUser as User;
     }
-    
+
     // If no stored user, try API (though this might fail if endpoint doesn't exist)
     try {
       const response = await axiosInstance.get<ApiResponse<User>>(
@@ -119,6 +124,31 @@ class AuthService {
     return tokenManager.hasTokens();
   }
 
+  async changePassword(
+    data: ChangePasswordRequest
+  ): Promise<ChangePasswordResponse> {
+    try {
+      const response = await axiosInstance.post<
+        ApiResponse<ChangePasswordResponse>
+      >(this.endpoints.changePassword, data);
+
+      if (response.data) {
+        return {
+          success: true,
+          message:
+            response.data.data?.message || "Password changed successfully",
+        };
+      }
+
+      throw new Error(
+        response.data.error?.message || "Failed to change password"
+      );
+    } catch (error: any) {
+      throw new Error(
+        error.message || "Failed to change password. Please try again."
+      );
+    }
+  }
 }
 
 export const authService = new AuthService();

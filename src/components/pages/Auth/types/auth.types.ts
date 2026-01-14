@@ -23,6 +23,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   user: User;
   accessToken: string;
+  isTempPassword?: boolean;
 }
 
 export interface RegisterRequest {
@@ -37,6 +38,15 @@ export interface RegisterRequest {
 export interface RegisterResponse {
   user: User;
   accessToken: string;
+}
+
+export interface ChangePasswordRequest {
+  newPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  success: boolean;
+  message: string;
 }
 
 export interface AuthError {
